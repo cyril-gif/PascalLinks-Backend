@@ -27,17 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const formatPrice = (price) => price.toFixed(2);
 
   // Load plans for a network
-  async function loadPlans(network) {
-    planListEl.innerHTML = '<p class="loading">Loading plans...</p>';
-    try {
-      const data = await window.api.fetchPlans(network);
-      currentPlans = data; // assume array
-      renderPlans(currentPlans);
-    } catch (error) {
-      planListEl.innerHTML = `<p class="error">Failed to load plans: ${error.message}</p>`;
-    }
+ async function loadPlans(network) {
+  planListEl.innerHTML = '<p class="loading">Loading plans...</p>';
+  try {
+    const data = await window.api.fetchPlans(network);
+    currentPlans = data;
+    renderPlans(currentPlans);
+  } catch (error) {
+    // Show the detailed error from the backend
+    planListEl.innerHTML = `<p class="error">Failed to load plans: ${error.message}</p>`;
   }
-
+}
   // Render plan cards
   function renderPlans(plans) {
     if (!plans || plans.length === 0) {
