@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - DataHub</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Admin-specific styles */
+    .admin-header {
+      background: var(--primary);
+      color: var(--text-light);
+      padding: 1rem 0;
+    }
+    .admin-header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-nav {
+      display: flex;
+      gap: 1rem;
+    }
+    .admin-nav button {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .admin-nav button.active {
+      background: var(--gold);
+      color: var(--primary);
+    }
+    .admin-nav button:hover {
+      background: var(--gold-light);
+      color: var(--primary);
+    }
+    .logout-btn {
+      background: var(--gold);
+      color: var(--primary);
+      border: none;
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+      padding: 1.5rem 0;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .stat-card h4 {
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .stat-card .number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--gold);
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .admin-table th {
+      background: var(--primary);
+      color: #fff;
+      padding: 0.8rem;
+      text-align: left;
+    }
+    .admin-table td {
+      padding: 0.8rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .admin-table .action-btn {
+      background: var(--gold);
+      border: none;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .admin-table .action-btn:hover {
+      background: var(--gold-light);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+    }
+    .form-group input {
+      width: 200px;
+      padding: 0.5rem;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--primary);
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--primary);
+    }
+    .pending-item {
+      background: #fff;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    @media (max-width: 600px) {
+      .admin-nav {
+        flex-wrap: wrap;
+      }
+      .admin-table th, .admin-table td {
+        font-size: 0.8rem;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="admin-header">
+    <div class="container">
+      <h1 class="logo">📶 DataHub Admin</h1>
+      <div>
+        <span style="margin-right:1rem;" id="adminName">Admin</span>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <nav class="admin-nav" style="margin:1rem 0;">
+      <button class="active" data-tab="orders">Orders</button>
+      <button data-tab="wallet">Wallet</button>
+      <button data-tab="verifications">Verifications</button>
+      <button data-tab="settings">Settings</button>
+      <button data-tab="analytics">Analytics</button>
+    </nav>
+
+    <!-- Orders Tab -->
+    <div id="tab-orders" class="tab-content active">
+      <h2>All Orders</h2>
+      <div style="margin-bottom:1rem;">
+        <select id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="pending_payment">Pending Payment</option>
+          <option value="processing">Processing</option>
+          <option value="completed">Completed</option>
+          <option value="failed">Failed</option>
+          <option value="payment_failed">Payment Failed</option>
+        </select>
+        <button id="applyFilterBtn" class="btn-primary">Apply</button>
+        <button id="refreshOrdersBtn" class="btn-primary">Refresh</button>
+      </div>
+      <div id="ordersContainer"><div class="loading">Loading orders...</div></div>
+    </div>
+
+    <!-- Wallet Tab -->
+    <div id="tab-wallet" class="tab-content">
+      <h2>Wallet Balance (Gigsgrid)</h2>
+      <div id="walletContainer"><div class="loading">Loading balance...</div></div>
+    </div>
+
+    <!-- Verifications Tab -->
+    <div id="tab-verifications" class="tab-content">
+      <h2>Pending Top-Up Verifications</h2>
+      <div id="verificationsContainer"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="tab-settings" class="tab-content">
+      <h2>Pricing Settings</h2>
+      <div class="form-group">
+        <label for="markupInput">Markup Percentage (%)</label>
+        <input type="number" id="markupInput" step="0.5" min="0" max="100">
+        <button id="saveSettingsBtn" class="btn-primary" style="margin-top:0.5rem;">Save Settings</button>
+      </div>
+      <div id="settingsMessage"></div>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="tab-analytics" class="tab-content">
+      <h2>Today's Analytics</h2>
+      <div id="analyticsContainer"><div class="loading">Loading analytics...</div></div>
+    </div>
+  </div>
+
+  <script>
+    // Admin dashboard JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/index.html';
+        return;
+      }
+
+      // Tab switching
+      const tabs = document.querySelectorAll('.admin-nav button');
+      tabs.forEach(btn => {
+        btn.addEventListener('click', function() {
+          tabs.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+          document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+          // Reload data for the tab
+          const tab = this.dataset.tab;
+          if (tab === 'orders') loadOrders();
+          else if (tab === 'wallet') loadWallet();
+          else if (tab === 'verifications') loadVerifications();
+          else if (tab === 'analytics') loadAnalytics();
+        });
+      });
+
+      // Load orders
+      async function loadOrders() {
+        const container = document.getElementById('ordersContainer');
+        container.innerHTML = '<div class="loading">Loading orders...</div>';
+        try {
+          const status = document.getElementById('statusFilter').value;
+          let url = '/api/admin/orders';
+          if (status) url += `?status=${status}`;
+          const res = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error('Failed to fetch orders');
+          const orders = await res.json();
+          if (orders.length === 0) {
+            container.innerHTML = '<p>No orders found.</p>';
+            return;
+          }
+          let html = `<table class="admin-table">
+            <thead><tr>
+              <th>Date</th><th>Network</th><th>Plan</th><th>Beneficiary</th>
+              <th>Amount</th><th>Status</th><th>Action</th>
+            </tr></thead><tbody>`;
+          orders.forEach(order => {
+            const date = new Date(order.createdAt).toLocaleDateString('en-GH');
+            const statusClass = `status-${order.status}`;
+            html += `<tr>
+              <td>${date}</td>
+              <td>${order.network.toUpperCase()}</td>
+              <td>${order.package_size}</td>
+              <td>${order.beneficiary}</td>
+              <td>${order.sellingPrice.toFixed(2)}</td>
+              <td><span class="status-badge ${statusClass}">${order.status.replace('_', ' ')}</span></td>
+              <td>
+                ${(order.status === 'failed' || order.status === 'payment_failed') ?
+                  `<button class="action-btn retry-btn" data-id="${order._id}">Retry</button>` :
+                  '—'}
+              </td>
+            </tr>`;
+          });
+          html += '</tbody></table>';
+          container.innerHTML = html;
+          // Attach retry events
+          document.querySelectorAll('.retry-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const id = this.dataset.id;
+              if (!confirm('Retry this order?')) return;
+              this.textContent = 'Retrying...';
+              this.disabled = true;
+              try {
+                const res = await fetch(`/api/admin/orders/${id}/retry`, {
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Retry failed');
+                alert('Retry initiated. Order status updated.');
+                loadOrders();
+              } catch (err) {
+                alert('Error: ' + err.message);
+                this.textContent = 'Retry';
+                this.disabled = false;
+              }
+            });
+          });
+        } catch (err) {
+          container.innerHTML = `<p class="error">${err.message}</p>`;
+        }
+      }
+
+      // Load wallet
+      async function loadWallet() {
+        const container = document.getElementById('walletContainer');
+        container.innerHTML = '<div class="loading">Loading...</div>';
+        try {
+          const res = await fetch('/api/admin/wallet', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error('Failed to fetch wallet');
+          const data = await res.json();
+          container.innerHTML = `<div class="stat-card"><h4>Current Balance</h4><div class="number">GHS ${data.balance.toFixed(2)}</div></div>`;
+        } catch (err) {
+          container.innerHTML = `<p class="error">${err.message}</p>`;
+        }
+      }
+
+      // Load verifications
+      async function loadVerifications() {
+        const container = document.getElementById('verificationsContainer');
+        container.innerHTML = '<div class="loading">Loading...</div>';
+        try {
+          const res = await fetch('/api/admin/pending-verifications', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error('Failed to fetch verifications');
+          const data = await res.json();
+          // Assuming data is an array of pending verifications
+          if (!data || data.length === 0) {
+            container.innerHTML = '<p>No pending verifications.</p>';
+            return;
+          }
+          let html = '';
+          data.forEach(item => {
+            html += `<div class="pending-item">
+              <span>${item.beneficiary || 'Unknown'}</span>
+              <span>${item.amount || ''}</span>
+              <button class="btn-primary verify-btn" data-id="${item.id}">Verify</button>
+            </div>`;
+          });
+          container.innerHTML = html;
+          // Attach verify events
+          document.querySelectorAll('.verify-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const id = this.dataset.id;
+              if (!confirm('Verify this top-up?')) return;
+              try {
+                const res = await fetch('/api/admin/verify-topup', {
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ verificationId: id }) // adjust based on API
+                });
+                if (!res.ok) throw new Error('Verification failed');
+                alert('Verification successful!');
+                loadVerifications();
+              } catch (err) {
+                alert('Error: ' + err.message);
+              }
+            });
+          });
+        } catch (err) {
+          container.innerHTML = `<p class="error">${err.message}</p>`;
+        }
+      }
+
+      // Load settings
+      async function loadSettings() {
+        try {
+          const res = await fetch('/api/admin/settings', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error('Failed to fetch settings');
+          const data = await res.json();
+          document.getElementById('markupInput').value = data.markupPercentage;
+        } catch (err) {
+          document.getElementById('settingsMessage').innerHTML = `<p class="error">${err.message}</p>`;
+        }
+      }
+
+      // Save settings
+      document.getElementById('saveSettingsBtn').addEventListener('click', async function() {
+        const markup = parseFloat(document.getElementById('markupInput').value);
+        if (isNaN(markup) || markup < 0 || markup > 100) {
+          alert('Please enter a valid percentage (0-100).');
+          return;
+        }
+        try {
+          const res = await fetch('/api/admin/settings', {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ markupPercentage: markup })
+          });
+          if (!res.ok) throw new Error('Failed to update settings');
+          const data = await res.json();
+          document.getElementById('settingsMessage').innerHTML = `<p style="color:green;">Settings updated successfully! Markup: ${data.markupPercentage}%</p>`;
+        } catch (err) {
+          document.getElementById('settingsMessage').innerHTML = `<p class="error">${err.message}</p>`;
+        }
+      });
+
+      // Load analytics
+      async function loadAnalytics() {
+        const container = document.getElementById('analyticsContainer');
+        container.innerHTML = '<div class="loading">Loading analytics...</div>';
+        try {
+          const res = await fetch('/api/admin/analytics', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error('Failed to fetch analytics');
+          const data = await res.json();
+          let html = `
+            <div class="stats-grid">
+              <div class="stat-card"><h4>Today's Revenue</h4><div class="number">GHS ${data.today.revenue.toFixed(2)}</div></div>
+              <div class="stat-card"><h4>Today's Orders</h4><div class="number">${data.today.orders}</div></div>
+              <div class="stat-card"><h4>Yesterday's Revenue</h4><div class="number">GHS ${data.yesterday.revenue.toFixed(2)}</div></div>
+              <div class="stat-card"><h4>Yesterday's Orders</h4><div class="number">${data.yesterday.orders}</div></div>
+              <div class="stat-card"><h4>Pending Payment</h4><div class="number">${data.pendingPayment}</div></div>
+              <div class="stat-card"><h4>Failed Orders</h4><div class="number">${data.failedOrders}</div></div>
+            </div>
+            <h3>Network Breakdown (Today)</h3>
+            <ul>
+          `;
+          if (data.today.networkBreakdown.length === 0) {
+            html += '<li>No completed orders today.</li>';
+          } else {
+            data.today.networkBreakdown.forEach(item => {
+              html += `<li>${item._id.toUpperCase()}: ${item.count} orders, GHS ${item.revenue.toFixed(2)}</li>`;
+            });
+          }
+          html += '</ul>';
+          container.innerHTML = html;
+        } catch (err) {
+          container.innerHTML = `<p class="error">${err.message}</p>`;
+        }
+      }
+
+      // Load initial data for active tab
+      const activeTab = document.querySelector('.admin-nav .active').dataset.tab;
+      if (activeTab === 'orders') loadOrders();
+      else if (activeTab === 'wallet') loadWallet();
+      else if (activeTab === 'verifications') loadVerifications();
+      else if (activeTab === 'analytics') loadAnalytics();
+      loadSettings(); // always load settings for the settings tab
+
+      // Filter orders
+      document.getElementById('applyFilterBtn').addEventListener('click', loadOrders);
+      document.getElementById('refreshOrdersBtn').addEventListener('click', loadOrders);
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('token');
+        window.location.href = '/index.html';
+      });
+    });
+  </script>
+</body>
+</html>
