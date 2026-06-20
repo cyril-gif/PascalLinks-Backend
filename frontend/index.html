@@ -23,7 +23,7 @@
     </div>
   </header>
 
-  <!-- ===== HERO – Brand Focus ===== -->
+  <!-- ===== HERO ===== -->
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-content">
@@ -63,30 +63,33 @@
     </div>
   </section>
 
-  <!-- ===== PURCHASE FLOW ===== -->
+  <!-- ===== PURCHASE FLOW – DROPDOWN ===== -->
   <section class="purchase-section" id="purchase">
     <div class="container">
       <div class="section-header">
         <h2>Choose Your <span>Data Plan</span></h2>
-        <p>Select a package, enter your phone number, and pay – we handle the rest.</p>
+        <p>Select a package from the dropdown, enter your phone number, and pay.</p>
       </div>
 
-      <!-- Plan Grid -->
-      <div id="planList" class="plan-grid">
-        <div class="loading-spinner">Loading plans...</div>
-      </div>
-
-      <!-- Order Card -->
+      <!-- Plan Dropdown -->
       <div class="order-card">
         <div class="order-card-header">
-          <h3>📋 Order Summary</h3>
-          <span class="step-indicator">Step 2 of 3</span>
+          <h3>📋 Select Package</h3>
+          <span class="step-indicator">Step 1 of 3</span>
         </div>
+        <div class="form-group">
+          <label for="planDropdown">📦 Choose your data plan</label>
+          <select id="planDropdown" class="plan-dropdown">
+            <option value="">— Select a package —</option>
+          </select>
+        </div>
+
         <div class="form-group">
           <label for="phone">📞 Beneficiary Phone Number</label>
           <input type="tel" id="phone" placeholder="e.g., 024 123 4567" required>
           <small>We'll send the data to this number.</small>
         </div>
+
         <div id="orderSummary" class="order-summary hidden">
           <div class="summary-row">
             <span>Network</span>
@@ -107,7 +110,7 @@
           <button id="buyNowBtn" class="btn-primary btn-large">Buy Now</button>
         </div>
         <div id="orderPlaceholder" class="order-placeholder">
-          <p>👆 Select a plan above to continue.</p>
+          <p>👆 Select a plan to continue.</p>
         </div>
       </div>
     </div>
@@ -196,7 +199,7 @@
     </div>
   </section>
 
-  <!-- ===== FOOTER – Brand Emphasis ===== -->
+  <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
