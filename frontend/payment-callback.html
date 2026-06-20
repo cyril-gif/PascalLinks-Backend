@@ -2,55 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment Processing - DataHub</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    /* centering and loading animation */
-    .callback-container {
-      max-width: 500px;
-      margin: 3rem auto;
-      padding: 2rem;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 6px solid #e9ecef;
-      border-top: 6px solid var(--gold);
-      border-radius: 50%;
-      margin: 1.5rem auto;
-      animation: spin 0.9s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .status-icon {
-      font-size: 3rem;
-      margin: 0.5rem 0;
-    }
+    .callback-container { max-width: 500px; margin: 3rem auto; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: var(--shadow); text-align: center; }
+    .spinner { width: 50px; height: 50px; border: 6px solid #e9ecef; border-top: 6px solid var(--gold); border-radius: 50%; margin: 1.5rem auto; animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .status-icon { font-size: 3rem; margin: 0.5rem 0; }
     .success { color: #28a745; }
     .error { color: #dc3545; }
-    .message {
-      font-size: 1.1rem;
-      margin: 0.5rem 0 1rem;
-    }
-    .btn-primary {
-      display: inline-block;
-      background: var(--gold);
-      color: var(--primary);
-      padding: 0.7rem 2rem;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: bold;
-      margin-top: 1rem;
-    }
-    .btn-primary:hover {
-      background: var(--gold-light);
-    }
+    .message { font-size: 1.1rem; margin: 0.5rem 0 1rem; }
+    .btn-primary { display: inline-block; background: var(--gold); color: var(--primary); padding: 0.7rem 2rem; border-radius: 30px; text-decoration: none; font-weight: bold; margin-top: 1rem; }
+    .btn-primary:hover { background: var(--gold-light); }
   </style>
 </head>
 <body>
@@ -63,40 +27,30 @@
   </div>
 
   <script>
-    /**
-     * payment-callback.html
-     * ------------------------------------------------
-     * This page is called by Paystack after a payment attempt.
-     * It reads the reference from the URL, calls the backend confirmation,
-     * and then redirects to the order status page.
-     */
+    const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
 
     (async function() {
       const container = document.getElementById('callbackContainer');
       const spinner = document.getElementById('loadingSpinner');
       const messageEl = document.getElementById('statusMessage');
 
-      // Get the reference from URL (Paystack sends ?reference=xxx)
       const urlParams = new URLSearchParams(window.location.search);
       const reference = urlParams.get('reference');
-      const trxref = urlParams.get('trxref'); // sometimes Paystack uses this
-
+      const trxref = urlParams.get('trxref');
       const ref = reference || trxref;
 
       if (!ref) {
-        // No reference – likely user accessed page directly
         spinner.style.display = 'none';
         messageEl.innerHTML = `
           <div class="status-icon error">❌</div>
           <p class="message">No payment reference found.</p>
-          <a href="/index.html" class="btn-primary">Return to Home</a>
+          <a href="index.html" class="btn-primary">Return to Home</a>
         `;
         return;
       }
 
       try {
-        // Call backend to confirm payment
-        const response = await fetch('/api/orders/confirm', {
+        const response = await fetch(`${API_BASE}/orders/confirm`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ reference: ref }),
@@ -105,24 +59,21 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
-          // Success – redirect to order status page
           spinner.style.display = 'none';
           messageEl.innerHTML = `
             <div class="status-icon success">✅</div>
             <p class="message">Payment successful! Your order is being processed.</p>
             <p>Redirecting to your order status...</p>
           `;
-          // Redirect after short delay
           setTimeout(() => {
-            window.location.href = `/order-status.html?orderId=${data.orderId}`;
+            window.location.href = `order-status.html?orderId=${data.orderId}`;
           }, 2000);
         } else {
-          // Payment failed
           spinner.style.display = 'none';
           messageEl.innerHTML = `
             <div class="status-icon error">❌</div>
             <p class="message">Payment verification failed: ${data.error || 'Unknown error'}</p>
-            <a href="/index.html" class="btn-primary">Try Again</a>
+            <a href="index.html" class="btn-primary">Try Again</a>
           `;
         }
       } catch (error) {
@@ -132,7 +83,7 @@
           <div class="status-icon error">❌</div>
           <p class="message">We could not verify your payment at this time.</p>
           <p>Please check your email for confirmation or contact support.</p>
-          <a href="/index.html" class="btn-primary">Return to Home</a>
+          <a href="index.html" class="btn-primary">Return to Home</a>
         `;
       }
     })();
