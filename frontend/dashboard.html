@@ -3,56 +3,293 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Dashboard - DataHub</title>
+  <title>Dashboard – PascalLinks</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .dashboard-header { background: var(--primary); color: var(--text-light); padding: 1rem 0; }
-    .dashboard-header .container { display: flex; justify-content: space-between; align-items: center; }
-    .user-info { display: flex; align-items: center; gap: 1rem; }
-    .user-info span { font-weight: 500; }
-    .logout-btn { background: var(--gold); color: var(--primary); border: none; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-weight: bold; }
-    .logout-btn:hover { background: var(--gold-light); }
-    .orders-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
-    .orders-table th { background: var(--primary); color: var(--text-light); padding: 0.8rem; text-align: left; }
-    .orders-table td { padding: 0.8rem; border-bottom: 1px solid #e9ecef; }
-    .orders-table tr:last-child td { border-bottom: none; }
-    .status-badge { padding: 0.25rem 0.75rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
+    /* Dashboard‑specific styles */
+    .dashboard-body {
+      background: #f4f6fa;
+      min-height: 100vh;
+    }
+    .dashboard-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 1rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .dashboard-header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .dashboard-header .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .user-area .user-name {
+      font-weight: 600;
+    }
+    .user-area .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+    .logout-btn {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      background: var(--gold);
+      color: var(--primary);
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-left: 6px solid var(--gold);
+      transition: transform 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+    }
+    .stat-card .stat-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6c757d;
+      font-weight: 600;
+    }
+    .stat-card .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 0.3rem;
+    }
+    .stat-card .stat-sub {
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-top: 0.2rem;
+    }
+
+    /* Orders section */
+    .orders-section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-top: 1.5rem;
+    }
+    .orders-section .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .orders-section .section-header h2 {
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin: 0;
+    }
+    .order-filter {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .order-filter input, .order-filter select {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .order-filter button {
+      background: var(--gold);
+      border: none;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .order-filter button:hover {
+      background: var(--gold-light);
+    }
+
+    .order-table-wrapper {
+      overflow-x: auto;
+    }
+    .order-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .order-table th {
+      text-align: left;
+      padding: 0.8rem 0.5rem;
+      background: #f8f9fa;
+      color: #495057;
+      font-weight: 600;
+      border-bottom: 2px solid #e9ecef;
+    }
+    .order-table td {
+      padding: 0.8rem 0.5rem;
+      border-bottom: 1px solid #e9ecef;
+      color: #212529;
+    }
+    .order-table tr:hover td {
+      background: #f8f9fa;
+    }
+    .status-badge {
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+      text-transform: capitalize;
+    }
     .status-pending_payment { background: #fff3cd; color: #856404; }
     .status-processing { background: #cce5ff; color: #004085; }
     .status-completed { background: #d4edda; color: #155724; }
     .status-failed { background: #f8d7da; color: #721c24; }
     .status-payment_failed { background: #f8d7da; color: #721c24; }
-    .status-retrying { background: #d6d8db; color: #383d41; }
-    .loading-spinner { text-align: center; padding: 2rem; color: var(--primary); }
-    .no-orders { text-align: center; padding: 2rem; color: #6c757d; }
-    @media (max-width: 600px) { .orders-table th, .orders-table td { padding: 0.5rem; font-size: 0.85rem; } .dashboard-header .container { flex-direction: column; gap: 0.5rem; } }
+    .status-retrying { background: #e2e3e5; color: #383d41; }
+
+    .no-orders {
+      text-align: center;
+      padding: 2rem;
+      color: #6c757d;
+    }
+    .no-orders a {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* Loading */
+    .loading-spinner {
+      text-align: center;
+      padding: 2rem;
+      color: var(--primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-header .container {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+      }
+      .user-area {
+        justify-content: flex-end;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .order-table-wrapper {
+        font-size: 0.8rem;
+      }
+      .order-table th, .order-table td {
+        padding: 0.4rem 0.2rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
-<body>
+<body class="dashboard-body">
+  <!-- Header -->
   <header class="dashboard-header">
     <div class="container">
-      <h1 class="logo">📶 DataHub</h1>
-      <div class="user-info">
-        <span id="userName">User</span>
+      <div class="logo">📶 PascalLinks</div>
+      <div class="user-area">
+        <span class="user-avatar" id="userAvatar">U</span>
+        <span class="user-name" id="userName">User</span>
         <button class="logout-btn" id="logoutBtn">Logout</button>
       </div>
     </div>
   </header>
 
-  <main>
-    <div class="container" style="padding: 2rem 1rem;">
-      <h2>My Orders</h2>
+  <main class="container" style="padding: 0 1rem 2rem;">
+    <!-- Stats Cards -->
+    <div class="stats-grid" id="statsContainer">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-number" id="totalOrders">0</div>
+        <div class="stat-sub">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Spent</div>
+        <div class="stat-number" id="totalSpent">GHS 0.00</div>
+        <div class="stat-sub">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending</div>
+        <div class="stat-number" id="pendingOrders">0</div>
+        <div class="stat-sub">Awaiting completion</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed</div>
+        <div class="stat-number" id="completedOrders">0</div>
+        <div class="stat-sub">Successfully delivered</div>
+      </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="orders-section">
+      <div class="section-header">
+        <h2>📋 Order History</h2>
+        <div class="order-filter">
+          <input type="text" id="searchInput" placeholder="Search by phone..." />
+          <select id="statusFilter">
+            <option value="">All statuses</option>
+            <option value="pending_payment">Pending Payment</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+            <option value="payment_failed">Payment Failed</option>
+          </select>
+          <button id="applyFilterBtn">Apply</button>
+        </div>
+      </div>
       <div id="ordersContainer">
         <div class="loading-spinner">Loading your orders...</div>
       </div>
     </div>
   </main>
-
-  <footer>
-    <div class="container">
-      <p>&copy; 2026 DataHub. All rights reserved.</p>
-    </div>
-  </footer>
 
   <script>
     const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
@@ -64,46 +301,93 @@
         return;
       }
 
+      // DOM refs
+      const userNameEl = document.getElementById('userName');
+      const userAvatarEl = document.getElementById('userAvatar');
+      const ordersContainer = document.getElementById('ordersContainer');
+      const totalOrdersEl = document.getElementById('totalOrders');
+      const totalSpentEl = document.getElementById('totalSpent');
+      const pendingOrdersEl = document.getElementById('pendingOrders');
+      const completedOrdersEl = document.getElementById('completedOrders');
+      const searchInput = document.getElementById('searchInput');
+      const statusFilter = document.getElementById('statusFilter');
+      const applyFilterBtn = document.getElementById('applyFilterBtn');
+
+      let allOrders = [];
+
+      // Fetch user profile
       try {
-        // Fetch user profile
         const profileRes = await fetch(`${API_BASE}/auth/profile`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` }
         });
-        if (!profileRes.ok) {
-          throw new Error('Session expired');
-        }
+        if (!profileRes.ok) throw new Error('Session expired');
         const profileData = await profileRes.json();
-        document.getElementById('userName').textContent = profileData.user.fullName;
+        const user = profileData.user;
+        userNameEl.textContent = user.fullName;
+        userAvatarEl.textContent = user.fullName.charAt(0).toUpperCase();
+      } catch (err) {
+        console.error('Profile error:', err);
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+        return;
+      }
 
-        // Fetch orders
-        const ordersRes = await fetch(`${API_BASE}/orders`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!ordersRes.ok) throw new Error('Failed to fetch orders');
-        const orders = await ordersRes.json();
+      // Fetch orders
+      async function loadOrders() {
+        try {
+          const res = await fetch(`${API_BASE}/orders`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error('Failed to fetch orders');
+          allOrders = await res.json();
+          renderOrders(allOrders);
+          updateStats(allOrders);
+        } catch (err) {
+          ordersContainer.innerHTML = `<p class="no-orders">⚠️ ${err.message}</p>`;
+        }
+      }
 
-        const container = document.getElementById('ordersContainer');
-        if (orders.length === 0) {
-          container.innerHTML = '<div class="no-orders">You have no orders yet. <a href="index.html">Buy data now</a></div>';
+      // Render filtered orders
+      function renderOrders(orders) {
+        const search = searchInput.value.trim().toLowerCase();
+        const status = statusFilter.value;
+        let filtered = orders;
+        if (search) {
+          filtered = filtered.filter(o => o.beneficiary.includes(search));
+        }
+        if (status) {
+          filtered = filtered.filter(o => o.status === status);
+        }
+
+        if (filtered.length === 0) {
+          ordersContainer.innerHTML = `
+            <div class="no-orders">
+              <p>No orders found.</p>
+              <a href="index.html">Buy data now</a>
+            </div>
+          `;
           return;
         }
 
         let html = `
-          <table class="orders-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Network</th>
-                <th>Plan</th>
-                <th>Beneficiary</th>
-                <th>Amount (GHS)</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div class="order-table-wrapper">
+            <table class="order-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Network</th>
+                  <th>Plan</th>
+                  <th>Beneficiary</th>
+                  <th>Amount (GHS)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
         `;
-        orders.forEach(order => {
-          const date = new Date(order.createdAt).toLocaleDateString('en-GH');
+        filtered.forEach(order => {
+          const date = new Date(order.createdAt).toLocaleDateString('en-GH', {
+            day: '2-digit', month: 'short', year: 'numeric'
+          });
           const statusClass = `status-${order.status}`;
           html += `
             <tr>
@@ -116,21 +400,41 @@
             </tr>
           `;
         });
-        html += '</tbody></table>';
-        container.innerHTML = html;
-      } catch (error) {
-        console.error('Dashboard error:', error);
-        document.getElementById('ordersContainer').innerHTML = `<p class="error">${error.message}</p>`;
-        if (error.message === 'Session expired') {
-          localStorage.removeItem('token');
-          window.location.href = 'login.html';
-        }
+        html += '</tbody></table></div>';
+        ordersContainer.innerHTML = html;
       }
 
+      // Update stats
+      function updateStats(orders) {
+        const total = orders.length;
+        const spent = orders.reduce((sum, o) => sum + (o.sellingPrice || 0), 0);
+        const pending = orders.filter(o => o.status === 'pending_payment' || o.status === 'processing').length;
+        const completed = orders.filter(o => o.status === 'completed').length;
+
+        totalOrdersEl.textContent = total;
+        totalSpentEl.textContent = `GHS ${spent.toFixed(2)}`;
+        pendingOrdersEl.textContent = pending;
+        completedOrdersEl.textContent = completed;
+      }
+
+      // Apply filters
+      applyFilterBtn.addEventListener('click', () => {
+        renderOrders(allOrders);
+      });
+
+      // Enter key on search
+      searchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') renderOrders(allOrders);
+      });
+
+      // Logout
       document.getElementById('logoutBtn').addEventListener('click', () => {
         localStorage.removeItem('token');
         window.location.href = 'index.html';
       });
+
+      // Initial load
+      await loadOrders();
     });
   </script>
 </body>
