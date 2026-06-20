@@ -23,30 +23,33 @@
     </div>
   </header>
 
-  <!-- ===== HERO ===== -->
+  <!-- ===== HERO – Premium Compact ===== -->
   <section class="hero">
     <div class="container hero-inner">
-      <div class="hero-content">
-        <span class="hero-badge">🇬🇭 Ghana's Leading Digital Solutions Provider</span>
-        <h1>Turning <span>Data</span> into <br>Instant <span>Power</span></h1>
-        <p class="tagline">Buy MTN data bundles in seconds. Reliable, affordable, and built for you.</p>
-        <div class="hero-actions">
-          <a href="#purchase" class="btn-primary">Get Started</a>
-          <a href="#how-it-works" class="btn-text">How it works →</a>
-        </div>
+      <div class="hero-left">
+        <span class="hero-badge">📱 MTN Data Reseller</span>
+        <h1>Data <span>Instantly</span></h1>
+        <p class="tagline">Buy MTN bundles in seconds. Reliable, secure, and built for Ghana.</p>
         <div class="hero-trust">
-          <span>🔒 Secure payments</span>
-          <span>⚡ Instant delivery</span>
-          <span>📞 24/7 support</span>
+          <span>🔒 Secure</span>
+          <span>⚡ Instant</span>
+          <span>📞 24/7</span>
         </div>
+        <a href="#purchase" class="btn-primary">Buy Now →</a>
       </div>
-      <div class="hero-visual">
-        <div class="hero-phone-mock">
-          <span>📱</span>
-          <div class="mock-badge">1GB · GHS 4.60</div>
+      <div class="hero-right">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-header">📶 MTN</div>
+            <div class="phone-plans">
+              <div class="phone-plan">1GB · GHS 3.80</div>
+              <div class="phone-plan active">2GB · GHS 7.60</div>
+              <div class="phone-plan">5GB · GHS 19.00</div>
+              <div class="phone-plan">10GB · GHS 38.00</div>
+            </div>
+            <div class="phone-footer">⚡ Instant Delivery</div>
+          </div>
         </div>
-        <div class="floating-badge top">⚡ Instant</div>
-        <div class="floating-badge bottom">💰 Best Price</div>
       </div>
     </div>
   </section>
@@ -54,7 +57,6 @@
   <!-- ===== NETWORK BADGE ===== -->
   <section class="network-section">
     <div class="container">
-      <p class="network-label">Available Network</p>
       <div class="network-badge">
         <span class="network-icon">📶</span>
         <span class="network-name">MTN</span>
@@ -67,34 +69,23 @@
   <section class="purchase-section" id="purchase">
     <div class="container">
       <div class="section-header">
-        <h2>Choose Your <span>Data Plan</span></h2>
-        <p>Select a package from the dropdown, enter your phone number, and pay.</p>
+        <h2>Choose Your <span>Plan</span></h2>
       </div>
 
-      <!-- Plan Dropdown -->
       <div class="order-card">
-        <div class="order-card-header">
-          <h3>📋 Select Package</h3>
-          <span class="step-indicator">Step 1 of 3</span>
-        </div>
         <div class="form-group">
-          <label for="planDropdown">📦 Choose your data plan</label>
+          <label for="planDropdown">📦 Select Package</label>
           <select id="planDropdown" class="plan-dropdown">
             <option value="">— Select a package —</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="phone">📞 Beneficiary Phone Number</label>
-          <input type="tel" id="phone" placeholder="e.g., 024 123 4567" required>
-          <small>We'll send the data to this number.</small>
+          <label for="phone">📞 Phone Number</label>
+          <input type="tel" id="phone" placeholder="024 123 4567" required>
         </div>
 
         <div id="orderSummary" class="order-summary hidden">
-          <div class="summary-row">
-            <span>Network</span>
-            <span id="summaryNetwork">MTN</span>
-          </div>
           <div class="summary-row">
             <span>Plan</span>
             <span id="summaryPlan">—</span>
@@ -107,10 +98,10 @@
             <span>Total</span>
             <span id="summaryPrice">GHS 0.00</span>
           </div>
-          <button id="buyNowBtn" class="btn-primary btn-large">Buy Now</button>
+          <button id="buyNowBtn" class="btn-primary btn-large">💳 Buy Now</button>
         </div>
         <div id="orderPlaceholder" class="order-placeholder">
-          <p>👆 Select a plan to continue.</p>
+          <p>👆 Select a plan to continue</p>
         </div>
       </div>
     </div>
@@ -121,26 +112,25 @@
     <div class="container">
       <div class="section-header">
         <h2>How It <span>Works</span></h2>
-        <p>We turn your data needs into instant solutions in 3 simple steps.</p>
       </div>
       <div class="steps-grid">
         <div class="step-card">
           <div class="step-number">1</div>
           <div class="step-icon">📋</div>
           <h4>Select Plan</h4>
-          <p>Choose the MTN package that fits your needs.</p>
+          <p>Choose your MTN package</p>
         </div>
         <div class="step-card">
           <div class="step-number">2</div>
           <div class="step-icon">📞</div>
           <h4>Enter Phone</h4>
-          <p>Provide the Ghana number you want to top up.</p>
+          <p>Your Ghana number</p>
         </div>
         <div class="step-card">
           <div class="step-number">3</div>
           <div class="step-icon">💳</div>
           <h4>Pay & Enjoy</h4>
-          <p>Pay securely and get your data in seconds.</p>
+          <p>Instant delivery</p>
         </div>
       </div>
     </div>
@@ -149,24 +139,16 @@
   <!-- ===== TESTIMONIALS ===== -->
   <section class="testimonials">
     <div class="container">
-      <div class="section-header">
-        <h2>What Our <span>Customers</span> Say</h2>
-      </div>
       <div class="testimonial-grid">
         <blockquote class="testimonial-card">
           <div class="stars">★★★★★</div>
-          <p>"I received my data instantly. No delays, no hassle. I'm definitely buying again."</p>
+          <p>"Instant delivery. Best prices in Ghana."</p>
           <cite>— Kojo A.</cite>
         </blockquote>
         <blockquote class="testimonial-card">
           <div class="stars">★★★★★</div>
-          <p>"Best MTN data prices in Ghana. The process is so simple and fast!"</p>
+          <p>"So simple and fast. I love it."</p>
           <cite>— Abena M.</cite>
-        </blockquote>
-        <blockquote class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <p>"I love the convenience. I can top up my family's phones from anywhere."</p>
-          <cite>— Kofi B.</cite>
         </blockquote>
       </div>
     </div>
@@ -175,25 +157,14 @@
   <!-- ===== FAQ ===== -->
   <section class="faq">
     <div class="container">
-      <div class="section-header">
-        <h2>Frequently Asked <span>Questions</span></h2>
-      </div>
       <div class="faq-list">
         <details class="faq-item">
           <summary>How soon will I receive my data?</summary>
-          <p>Delivery is instant. After successful payment, your data is sent to the provided number within 1 minute.</p>
+          <p>Instant. Within 1 minute after payment.</p>
         </details>
         <details class="faq-item">
-          <summary>What if I enter the wrong phone number?</summary>
-          <p>Please double-check before paying. We cannot reverse delivery once it's sent. Contact support immediately if you made an error.</p>
-        </details>
-        <details class="faq-item">
-          <summary>Which networks do you support?</summary>
-          <p>Currently we support MTN only. More networks will be added soon.</p>
-        </details>
-        <details class="faq-item">
-          <summary>Is my payment secure?</summary>
-          <p>Yes. Payments are processed by Paystack, a secure payment gateway. We never store your card details.</p>
+          <summary>What if I enter the wrong number?</summary>
+          <p>Please double-check. We cannot reverse delivery.</p>
         </details>
       </div>
     </div>
@@ -205,17 +176,6 @@
       <div class="footer-brand">
         <span class="logo">📶 Pascal<span>Links</span></span>
         <p>Turning ideas into powerful digital solutions.</p>
-        <div class="footer-social">
-          <span>📍 Accra, Ghana</span>
-          <span>📧 info@pascallinks.com</span>
-        </div>
-      </div>
-      <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
-        <a href="#">Support</a>
-        <a href="#">About</a>
       </div>
       <div class="footer-copy">
         &copy; 2026 PascalLinks. All rights reserved.
