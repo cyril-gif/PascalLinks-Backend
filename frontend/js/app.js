@@ -1,16 +1,15 @@
 /**
- * app.js – Premium Landing Page (Debug Version)
+ * app.js – Premium Landing Page (with retry)
  * ------------------------------------------------
  * Loads MTN plans, handles selection, phone validation,
- * and Paystack payment. Includes fallback to mock data.
+ * and Paystack payment. Includes a retry button.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 App started');
+  console.log('🚀 App started v2');
 
   const planDropdown = document.getElementById('planDropdown');
   const phoneInput = document.getElementById('phone');
-  // Only these three summary elements exist in the HTML
   const summaryPlan = document.getElementById('summaryPlan');
   const summaryPhone = document.getElementById('summaryPhone');
   const summaryPrice = document.getElementById('summaryPrice');
@@ -20,26 +19,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let selectedPlan = null;
 
+  // ----- Add a retry button dynamically -----
+  const retryBtn = document.createElement('button');
+  retryBtn.textContent = '🔄 Retry Loading Plans';
+  retryBtn.className = 'btn-primary';
+  retryBtn.style.margin = '1rem auto';
+  retryBtn.style.display = 'none'; // hidden by default
+  retryBtn.style.fontSize = '0.8rem';
+  retryBtn.style.padding = '0.4rem 1.2rem';
+  // Insert after the dropdown
+  planDropdown.parentNode.insertBefore(retryBtn, planDropdown.nextSibling);
+
+  // ----- Format helper -----
   const formatPrice = (price) => price.toFixed(2);
 
-  // ----- Load plans (with fallback) -----
-  async function loadPlans() {
+  // ----- Load plans (with retry) -----
+  async function loadPlans(showRetry = false) {
     console.log('📡 Loading plans...');
     try {
       const data = await window.api.fetchPlans('mtn');
       console.log('✅ Plans fetched:', data);
       if (data && data.length > 0) {
         populateDropdown(data);
-      } else {
-        console.warn('⚠️ No plans from API, using mock data');
-        useMockPlans();
+        retryBtn.style.display = 'none';
+        return;
       }
-    } catch (error) {
-      console.error('❌ API error, using mock data:', error);
+      // If data is empty, fallback to mock
+      console.warn('⚠️ No plans from API, using mock data');
       useMockPlans();
+      retryBtn.style.display = 'none';
+    } catch (error) {
+      console.error('❌ API error:', error);
+      useMockPlans();
+      if (showRetry) {
+        retryBtn.style.display = 'block';
+      } else {
+        // First attempt – show retry after a delay
+        setTimeout(() => {
+          retryBtn.style.display = 'block';
+        }, 2000);
+      }
     }
   }
 
+  // ----- Populate dropdown -----
   function populateDropdown(plans) {
     planDropdown.innerHTML = '<option value="">— Select a package —</option>';
     plans.forEach(plan => {
@@ -49,10 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
       planDropdown.appendChild(option);
     });
     console.log('✅ Dropdown populated with', plans.length, 'plans');
-    // Attach change event after options are added
+    // Remove old listener and attach fresh one
+    planDropdown.removeEventListener('change', onPlanChange);
     planDropdown.addEventListener('change', onPlanChange);
+    // Trigger a change to reset state
+    planDropdown.dispatchEvent(new Event('change'));
   }
 
+  // ----- Mock plans (from your screenshot) -----
   function useMockPlans() {
     const mockPlans = [
       { package_size: '1GB', price: 3.80, name: '1GB' },
@@ -88,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedPlan = null;
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
-      console.log('⛔ No plan selected');
       return;
     }
     try {
@@ -103,58 +129,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ----- Phone input handler -----
-  phoneInput.addEventListener('input', function() {
-    console.log('📞 Phone input changed:', this.value);
-    updateSummary();
-  });
+  // ----- Phone input -----
+  phoneInput.addEventListener('input', updateSummary);
 
-  // ----- Update summary (no summaryNetwork) -----
+  // ----- Update summary -----
   function updateSummary() {
     const phone = phoneInput.value.trim();
-    console.log('📝 updateSummary called, selectedPlan:', selectedPlan, 'phone:', phone);
-
-    if (!selectedPlan) {
+    if (!selectedPlan || !phone || !/^0[2357]\d{8}$/.test(phone)) {
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
-      console.log('⛔ No plan, hiding summary');
       return;
     }
-    if (!phone) {
-      orderSummary.classList.add('hidden');
-      orderPlaceholder.style.display = 'block';
-      console.log('⛔ No phone, hiding summary');
-      return;
-    }
-    if (!/^0[2357]\d{8}$/.test(phone)) {
-      orderSummary.classList.add('hidden');
-      orderPlaceholder.style.display = 'block';
-      console.log('⛔ Invalid phone format');
-      return;
-    }
-
-    // Show summary – no summaryNetwork element, so we skip it
     summaryPlan.textContent = selectedPlan.name || selectedPlan.package_size;
     summaryPhone.textContent = phone;
     summaryPrice.textContent = `GHS ${formatPrice(selectedPlan.price)}`;
     orderSummary.classList.remove('hidden');
     orderPlaceholder.style.display = 'none';
-    console.log('✅ Summary shown');
   }
+
+  // ----- Retry button -----
+  retryBtn.addEventListener('click', async () => {
+    retryBtn.textContent = '⏳ Loading...';
+    retryBtn.disabled = true;
+    await loadPlans(true);
+    retryBtn.textContent = '🔄 Retry Loading Plans';
+    retryBtn.disabled = false;
+    retryBtn.style.display = 'none';
+  });
 
   // ----- Buy Now -----
   buyNowBtn.addEventListener('click', async () => {
-    console.log('🛒 Buy Now clicked');
     if (!selectedPlan) {
       alert('Please select a plan.');
       return;
     }
     const phone = phoneInput.value.trim();
-    if (!phone) {
-      alert('Please enter a phone number.');
-      return;
-    }
-    if (!/^0[2357]\d{8}$/.test(phone)) {
+    if (!phone || !/^0[2357]\d{8}$/.test(phone)) {
       alert('Please enter a valid Ghana phone number (e.g., 0241234567).');
       return;
     }
@@ -168,42 +178,34 @@ document.addEventListener('DOMContentLoaded', () => {
         package_size: selectedPlan.package_size,
         beneficiary: phone,
       };
-      console.log('📦 Order data:', orderData);
-
       const token = localStorage.getItem('token') || null;
       const response = await window.api.initiateOrder(orderData, token);
-      console.log('✅ Order initiated:', response);
-
       const { orderId, transactionRef, amount, paystackKey } = response;
       const amountInPesewas = Math.round(amount * 100);
-      console.log('💳 Paystack amount:', amountInPesewas, 'pesewas');
 
       const handler = PaystackPop.setup({
         key: paystackKey,
-        email: 'customer@example.com', // Replace with user email if available
+        email: 'customer@example.com',
         amount: amountInPesewas,
         currency: 'GHS',
         ref: transactionRef,
         callback: (resp) => {
-          console.log('✅ Payment successful:', resp);
           alert('Payment successful! Your order is being processed.');
           window.location.href = `order-status.html?orderId=${orderId}`;
         },
         onClose: () => {
-          console.log('❌ Payment popup closed');
           buyNowBtn.disabled = false;
           buyNowBtn.textContent = 'Buy Now';
         },
       });
       handler.openIframe();
     } catch (error) {
-      console.error('❌ Order failed:', error);
       alert(`Order failed: ${error.message}`);
       buyNowBtn.disabled = false;
       buyNowBtn.textContent = 'Buy Now';
     }
   });
 
-  // ----- Initial load -----
-  loadPlans();
+  // ----- Initial load (with retry) -----
+  loadPlans(false);
 });
