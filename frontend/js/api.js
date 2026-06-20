@@ -7,7 +7,7 @@
 
 const API_BASE = window.location.origin.includes('localhost')
   ? 'http://localhost:5000/api'        // development
-  : 'https://your-backend.com/api';    // production – set correctly
+  : 'https://https://pascallinks-frontend.onrender.com/api';    // production – set correctly
 
 /**
  * Generic fetch wrapper with error handling.
