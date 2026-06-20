@@ -5,7 +5,7 @@
  * All endpoints are relative to the backend base URL.
  */
 
-// 👇 Use your Render backend URL (no trailing slash)
+// 👇 Backend URL (no trailing slash)
 const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
 
 /**
@@ -22,7 +22,7 @@ async function apiCall(endpoint, method = 'GET', body = null, token = null) {
   const options = {
     method,
     headers,
-    credentials: 'include',
+    // credentials: 'include',   // <-- REMOVED to fix CORS
   };
   if (body) {
     options.body = JSON.stringify(body);
@@ -32,7 +32,8 @@ async function apiCall(endpoint, method = 'GET', body = null, token = null) {
     const response = await fetch(`${API_BASE}${endpoint}`, options);
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || 'API request failed');
+      // Use backend error message if available
+      throw new Error(data.details || data.error || 'API request failed');
     }
     return data;
   } catch (error) {
@@ -56,11 +57,16 @@ async function initiateOrder(orderData) {
 }
 
 /**
- * Confirm payment (usually called by backend webhook, but we might call it manually).
+ * Confirm payment (called by Paystack redirect/webhook).
  */
 async function confirmPayment(reference) {
   return apiCall('/orders/confirm', 'POST', { reference });
 }
 
 // Expose globally for use in app.js
-window.api = { fetchPlans, initiateOrder, confirmPayment, API_BASE };
+window.api = { 
+  API_BASE,
+  fetchPlans, 
+  initiateOrder, 
+  confirmPayment 
+};
