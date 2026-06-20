@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>Order Status - DataHub</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .status-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+    .status-container h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+    .order-detail {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .order-detail:last-child {
+      border-bottom: none;
+    }
+    .order-detail .label {
+      font-weight: 600;
+      color: #495057;
+    }
+    .order-detail .value {
+      color: var(--primary);
+    }
+    .status-badge-large {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+    .refresh-btn {
+      background: var(--gold);
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--primary);
+      margin-top: 1rem;
+    }
+    .refresh-btn:hover {
+      background: var(--gold-light);
+    }
+    .loading-spinner {
+      text-align: center;
+      padding: 2rem;
+      color: var(--primary);
+    }
+    .error-msg {
+      color: #dc3545;
+      text-align: center;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .auto-refresh {
+      font-size: 0.9rem;
+      color: #6c757d;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="status-container" id="statusContainer">
+    <h2>📊 Order Status</h2>
+    <div id="orderContent">
+      <div class="loading-spinner">Loading order details...</div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * order-status.html
+     * ------------------------------------------------
+     * Displays the status of a specific order by orderId.
+     * Auto-refreshes every 10 seconds until the order is completed or failed.
+     */
+
+    (function() {
+      const container = document.getElementById('orderContent');
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('orderId');
+
+      if (!orderId) {
+        container.innerHTML = `
+          <p class="error-msg">No order ID provided.</p>
+          <a href="/index.html" class="back-link">Go back to home</a>
+        `;
+        return;
+      }
+
+      let refreshInterval = null;
+
+      async function fetchOrderStatus() {
+        try {
+          // Try to get token if user is logged in
+          const token = localStorage.getItem('token');
+          const headers = {};
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+          }
+
+          const response = await fetch(`/api/orders/${orderId}`, {
+            headers,
+          });
+
+          if (!response.ok) {
+            if (response.status === 404) {
+              container.innerHTML = `
+                <p class="error-msg">Order not found.</p>
+                <a href="/index.html" class="back-link">Go back to home</a>
+              `;
+              clearInterval(refreshInterval);
+              return;
+            }
+            throw new Error(`Failed to fetch order: ${response.status}`);
+          }
+
+          const order = await response.json();
+          renderOrder(order);
+
+          // Stop refreshing if order is completed or failed
+          if (order.status === 'completed' || order.status === 'failed' || order.status === 'payment_failed') {
+            clearInterval(refreshInterval);
+            refreshInterval = null;
+          }
+        } catch (error) {
+          console.error('Error fetching order status:', error);
+          container.innerHTML = `
+            <p class="error-msg">Could not load order status. Please try again.</p>
+            <button class="refresh-btn" onclick="location.reload()">Refresh</button>
+            <a href="/index.html" class="back-link">Go back to home</a>
+          `;
+          clearInterval(refreshInterval);
+          refreshInterval = null;
+        }
+      }
+
+      function renderOrder(order) {
+        const date = new Date(order.createdAt).toLocaleString('en-GH');
+        const statusClass = `status-${order.status}`;
+        const statusDisplay = order.status.replace(/_/g, ' ').toUpperCase();
+
+        let html = `
+          <div class="order-detail">
+            <span class="label">Order ID</span>
+            <span class="value">${order._id}</span>
+          </div>
+          <div class="order-detail">
+            <span class="label">Date</span>
+            <span class="value">${date}</span>
+          </div>
+          <div class="order-detail">
+            <span class="label">Network</span>
+            <span class="value">${order.network.toUpperCase()}</span>
+          </div>
+          <div class="order-detail">
+            <span class="label">Plan</span>
+            <span class="value">${order.package_size}</span>
+          </div>
+          <div class="order-detail">
+            <span class="label">Beneficiary</span>
+            <span class="value">${order.beneficiary}</span>
+          </div>
+          <div class="order-detail">
+            <span class="label">Amount Paid</span>
+            <span class="value">GHS ${order.sellingPrice.toFixed(2)}</span>
+          </div>
+          <div style="text-align:center; margin: 1rem 0;">
+            <span class="status-badge-large ${statusClass}">${statusDisplay}</span>
+          </div>
+          ${order.errorMessage ? `<p style="color:#dc3545; text-align:center;">Error: ${order.errorMessage}</p>` : ''}
+          <div style="text-align:center; margin-top: 0.5rem;">
+            <button class="refresh-btn" onclick="location.reload()">↻ Refresh Now</button>
+          </div>
+          <div class="auto-refresh">
+            ${refreshInterval ? 'Auto-refreshing every 10 seconds...' : 'No further updates expected.'}
+          </div>
+          <a href="/dashboard.html" class="back-link">Go to Dashboard</a>
+        `;
+
+        container.innerHTML = html;
+      }
+
+      // Start fetching
+      fetchOrderStatus();
+
+      // Set up auto-refresh (every 10 seconds) if not already stopped
+      refreshInterval = setInterval(() => {
+        // Only refresh if we haven't cleared the interval
+        if (refreshInterval) {
+          fetchOrderStatus();
+        }
+      }, 10000);
+    })();
+  </script>
+</body>
+</html>
