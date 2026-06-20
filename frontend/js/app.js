@@ -1,100 +1,98 @@
 /**
- * app.js
+ * app.js – Updated for Dropdown Selection
  * ------------------------------------------------
- * Main frontend logic for the data bundle purchase flow.
- * Handles network selection (MTN only), plan fetching, phone input,
- * order summary, and Paystack payment integration.
- * Sends JWT token if user is logged in to associate orders.
+ * Manages the purchase flow:
+ * - Loads MTN plans into a dropdown
+ * - Tracks selected plan
+ * - Updates order summary
+ * - Handles Paystack payment
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const networkBtns = document.querySelectorAll('.network-btn');
-  const planListEl = document.getElementById('planList');
+  const planDropdown = document.getElementById('planDropdown');
   const phoneInput = document.getElementById('phone');
   const summaryNetwork = document.getElementById('summaryNetwork');
   const summaryPlan = document.getElementById('summaryPlan');
   const summaryPhone = document.getElementById('summaryPhone');
   const summaryPrice = document.getElementById('summaryPrice');
   const orderSummary = document.getElementById('orderSummary');
+  const orderPlaceholder = document.getElementById('orderPlaceholder');
   const buyNowBtn = document.getElementById('buyNowBtn');
 
-  let selectedNetwork = 'mtn';
   let selectedPlan = null;
-  let currentPlans = [];
 
+  // Format price
   const formatPrice = (price) => price.toFixed(2);
 
-  async function loadPlans(network) {
-    planListEl.innerHTML = '<p class="loading">Loading plans...</p>';
+  // Load plans into dropdown
+  async function loadPlans() {
     try {
-      const data = await window.api.fetchPlans(network);
-      currentPlans = data;
-      renderPlans(currentPlans);
+      const data = await window.api.fetchPlans('mtn');
+      planDropdown.innerHTML = '<option value="">— Select a package —</option>';
+      data.forEach(plan => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify(plan);
+        option.textContent = `${plan.name || plan.package_size} - GHS ${formatPrice(plan.price)}`;
+        planDropdown.appendChild(option);
+      });
+      // Add a small note if no plans
+      if (data.length === 0) {
+        planDropdown.innerHTML = '<option value="">No plans available</option>';
+      }
     } catch (error) {
-      planListEl.innerHTML = `<p class="error">Failed to load plans: ${error.message}</p>`;
+      console.error('Error loading plans:', error);
+      planDropdown.innerHTML = '<option value="">Failed to load plans</option>';
     }
   }
 
-  function renderPlans(plans) {
-    if (!plans || plans.length === 0) {
-      planListEl.innerHTML = '<p>No plans available for this network.</p>';
+  // Update order summary when dropdown changes
+  planDropdown.addEventListener('change', () => {
+    const value = planDropdown.value;
+    if (!value) {
+      selectedPlan = null;
+      orderSummary.classList.add('hidden');
+      orderPlaceholder.style.display = 'block';
       return;
     }
-    planListEl.innerHTML = plans.map(plan => `
-      <div class="plan-card" data-plan='${JSON.stringify(plan)}'>
-        <div class="plan-name">${plan.name || plan.package_size}</div>
-        <div class="plan-size">${plan.size || ''}</div>
-        <div class="plan-price">GHS ${formatPrice(plan.price)}</div>
-      </div>
-    `).join('');
+    selectedPlan = JSON.parse(value);
+    updateSummary();
+  });
 
-    document.querySelectorAll('.plan-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        selectedPlan = JSON.parse(card.dataset.plan);
-        updateSummary();
-      });
-    });
-  }
+  // Update summary when phone number changes
+  phoneInput.addEventListener('input', updateSummary);
 
   function updateSummary() {
     const phone = phoneInput.value.trim();
     if (!selectedPlan || !phone) {
       orderSummary.classList.add('hidden');
+      orderPlaceholder.style.display = 'block';
       return;
     }
     if (!/^0[2357]\d{8}$/.test(phone)) {
       orderSummary.classList.add('hidden');
+      orderPlaceholder.style.display = 'block';
       return;
     }
-    summaryNetwork.textContent = selectedNetwork.toUpperCase();
+    // Show summary
+    summaryNetwork.textContent = 'MTN';
     summaryPlan.textContent = selectedPlan.name || selectedPlan.package_size;
     summaryPhone.textContent = phone;
-    summaryPrice.textContent = formatPrice(selectedPlan.price);
+    summaryPrice.textContent = `GHS ${formatPrice(selectedPlan.price)}`;
     orderSummary.classList.remove('hidden');
+    orderPlaceholder.style.display = 'none';
   }
 
-  networkBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      networkBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedNetwork = btn.dataset.network;
-      selectedPlan = null;
-      orderSummary.classList.add('hidden');
-      loadPlans(selectedNetwork);
-    });
-  });
-
-  phoneInput.addEventListener('input', updateSummary);
-
-  // Buy Now – send token if logged in
+  // Buy Now
   buyNowBtn.addEventListener('click', async () => {
-    if (!selectedPlan || !phoneInput.value.trim()) {
-      alert('Please select a plan and enter a phone number.');
+    if (!selectedPlan) {
+      alert('Please select a plan.');
       return;
     }
     const phone = phoneInput.value.trim();
+    if (!phone) {
+      alert('Please enter a phone number.');
+      return;
+    }
     if (!/^0[2357]\d{8}$/.test(phone)) {
       alert('Please enter a valid Ghana phone number (e.g., 0241234567).');
       return;
@@ -105,23 +103,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const orderData = {
-        network: selectedNetwork,
+        network: 'mtn',
         package_size: selectedPlan.package_size,
         beneficiary: phone,
       };
 
-      // Get token if user is logged in
       const token = localStorage.getItem('token') || null;
-
-      // Initiate order – pass token
       const response = await window.api.initiateOrder(orderData, token);
-      const { orderId, transactionRef, amount, paystackKey, accessCode } = response;
+      const { orderId, transactionRef, amount, paystackKey } = response;
 
       const amountInPesewas = Math.round(amount * 100);
 
       const handler = PaystackPop.setup({
         key: paystackKey,
-        email: 'customer@example.com',
+        email: 'customer@example.com', // consider asking user for email
         amount: amountInPesewas,
         currency: 'GHS',
         ref: transactionRef,
@@ -143,5 +138,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initial load
-  loadPlans(selectedNetwork);
+  loadPlans();
 });
