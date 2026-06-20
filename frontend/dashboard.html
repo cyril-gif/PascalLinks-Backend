@@ -3,101 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Dashboard - PascalLinks</title>
+  <title>My Dashboard - DataHub</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Additional dashboard-specific styles */
-    .dashboard-header {
-      background: var(--primary);
-      color: var(--text-light);
-      padding: 1rem 0;
-    }
-    .dashboard-header .container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .user-info span {
-      font-weight: 500;
-    }
-    .logout-btn {
-      background: var(--gold);
-      color: var(--primary);
-      border: none;
-      padding: 0.4rem 1rem;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .logout-btn:hover {
-      background: var(--gold-light);
-    }
-    .orders-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .orders-table th {
-      background: var(--primary);
-      color: var(--text-light);
-      padding: 0.8rem;
-      text-align: left;
-    }
-    .orders-table td {
-      padding: 0.8rem;
-      border-bottom: 1px solid #e9ecef;
-    }
-    .orders-table tr:last-child td {
-      border-bottom: none;
-    }
-    .status-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      display: inline-block;
-    }
+    .dashboard-header { background: var(--primary); color: var(--text-light); padding: 1rem 0; }
+    .dashboard-header .container { display: flex; justify-content: space-between; align-items: center; }
+    .user-info { display: flex; align-items: center; gap: 1rem; }
+    .user-info span { font-weight: 500; }
+    .logout-btn { background: var(--gold); color: var(--primary); border: none; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-weight: bold; }
+    .logout-btn:hover { background: var(--gold-light); }
+    .orders-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+    .orders-table th { background: var(--primary); color: var(--text-light); padding: 0.8rem; text-align: left; }
+    .orders-table td { padding: 0.8rem; border-bottom: 1px solid #e9ecef; }
+    .orders-table tr:last-child td { border-bottom: none; }
+    .status-badge { padding: 0.25rem 0.75rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
     .status-pending_payment { background: #fff3cd; color: #856404; }
     .status-processing { background: #cce5ff; color: #004085; }
     .status-completed { background: #d4edda; color: #155724; }
     .status-failed { background: #f8d7da; color: #721c24; }
     .status-payment_failed { background: #f8d7da; color: #721c24; }
     .status-retrying { background: #d6d8db; color: #383d41; }
-    .loading-spinner {
-      text-align: center;
-      padding: 2rem;
-      color: var(--primary);
-    }
-    .no-orders {
-      text-align: center;
-      padding: 2rem;
-      color: #6c757d;
-    }
-    @media (max-width: 600px) {
-      .orders-table th, .orders-table td {
-        padding: 0.5rem;
-        font-size: 0.85rem;
-      }
-      .dashboard-header .container {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-    }
+    .loading-spinner { text-align: center; padding: 2rem; color: var(--primary); }
+    .no-orders { text-align: center; padding: 2rem; color: #6c757d; }
+    @media (max-width: 600px) { .orders-table th, .orders-table td { padding: 0.5rem; font-size: 0.85rem; } .dashboard-header .container { flex-direction: column; gap: 0.5rem; } }
   </style>
 </head>
 <body>
   <header class="dashboard-header">
     <div class="container">
-      <h1 class="logo">📶 PascalLinks</h1>
+      <h1 class="logo">📶 DataHub</h1>
       <div class="user-info">
         <span id="userName">User</span>
         <button class="logout-btn" id="logoutBtn">Logout</button>
@@ -116,22 +50,23 @@
 
   <footer>
     <div class="container">
-      <p>&copy; 2026 PascalLinks. All rights reserved.</p>
+      <p>&copy; 2026 DataHub. All rights reserved.</p>
     </div>
   </footer>
 
   <script>
-    // Simple dashboard logic – no external libs
+    const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
+
     document.addEventListener('DOMContentLoaded', async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        window.location.href = '/index.html'; // redirect to home / login
+        window.location.href = 'login.html';
         return;
       }
 
-      // Fetch user profile and orders
       try {
-        const profileRes = await fetch('/api/auth/profile', {
+        // Fetch user profile
+        const profileRes = await fetch(`${API_BASE}/auth/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!profileRes.ok) {
@@ -141,7 +76,7 @@
         document.getElementById('userName').textContent = profileData.user.fullName;
 
         // Fetch orders
-        const ordersRes = await fetch('/api/orders', {
+        const ordersRes = await fetch(`${API_BASE}/orders`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!ordersRes.ok) throw new Error('Failed to fetch orders');
@@ -149,7 +84,7 @@
 
         const container = document.getElementById('ordersContainer');
         if (orders.length === 0) {
-          container.innerHTML = '<div class="no-orders">You have no orders yet. <a href="/index.html">Buy data now</a></div>';
+          container.innerHTML = '<div class="no-orders">You have no orders yet. <a href="index.html">Buy data now</a></div>';
           return;
         }
 
@@ -186,17 +121,15 @@
       } catch (error) {
         console.error('Dashboard error:', error);
         document.getElementById('ordersContainer').innerHTML = `<p class="error">${error.message}</p>`;
-        // If session expired, clear token and redirect
         if (error.message === 'Session expired') {
           localStorage.removeItem('token');
-          window.location.href = '/index.html';
+          window.location.href = 'login.html';
         }
       }
 
-      // Logout
       document.getElementById('logoutBtn').addEventListener('click', () => {
         localStorage.removeItem('token');
-        window.location.href = '/index.html';
+        window.location.href = 'index.html';
       });
     });
   </script>
