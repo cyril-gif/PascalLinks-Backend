@@ -2,12 +2,11 @@
  * app.js
  * ------------------------------------------------
  * Main frontend logic for the data bundle purchase flow.
- * Handles network selection, plan fetching, phone input, summary,
- * and Paystack payment integration.
+ * Handles network selection (MTN only), plan fetching, phone input,
+ * order summary, and Paystack payment integration.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // DOM elements
   const networkBtns = document.querySelectorAll('.network-btn');
   const planListEl = document.getElementById('planList');
   const phoneInput = document.getElementById('phone');
@@ -18,27 +17,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderSummary = document.getElementById('orderSummary');
   const buyNowBtn = document.getElementById('buyNowBtn');
 
-  // State
   let selectedNetwork = 'mtn';
   let selectedPlan = null;
   let currentPlans = [];
 
-  // Utility: format price in GHS
   const formatPrice = (price) => price.toFixed(2);
 
-  // Load plans for a network
- async function loadPlans(network) {
-  planListEl.innerHTML = '<p class="loading">Loading plans...</p>';
-  try {
-    const data = await window.api.fetchPlans(network);
-    currentPlans = data;
-    renderPlans(currentPlans);
-  } catch (error) {
-    // Show the detailed error from the backend
-    planListEl.innerHTML = `<p class="error">Failed to load plans: ${error.message}</p>`;
+  async function loadPlans(network) {
+    planListEl.innerHTML = '<p class="loading">Loading plans...</p>';
+    try {
+      const data = await window.api.fetchPlans(network);
+      currentPlans = data;
+      renderPlans(currentPlans);
+    } catch (error) {
+      planListEl.innerHTML = `<p class="error">Failed to load plans: ${error.message}</p>`;
+    }
   }
-}
-  // Render plan cards
+
   function renderPlans(plans) {
     if (!plans || plans.length === 0) {
       planListEl.innerHTML = '<p>No plans available for this network.</p>';
@@ -52,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `).join('');
 
-    // Add click event to each card
     document.querySelectorAll('.plan-card').forEach(card => {
       card.addEventListener('click', () => {
         document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
@@ -63,43 +57,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Update order summary
   function updateSummary() {
     const phone = phoneInput.value.trim();
     if (!selectedPlan || !phone) {
       orderSummary.classList.add('hidden');
       return;
     }
-    // Basic phone validation (frontend only)
     if (!/^0[2357]\d{8}$/.test(phone)) {
       orderSummary.classList.add('hidden');
-      // Could show a small warning
       return;
     }
     summaryNetwork.textContent = selectedNetwork.toUpperCase();
     summaryPlan.textContent = selectedPlan.name || selectedPlan.package_size;
     summaryPhone.textContent = phone;
-    summaryPrice.textContent = formatPrice(selectedPlan.price); // base price; markup applied on backend
+    summaryPrice.textContent = formatPrice(selectedPlan.price); // base price (will be overwritten by backend response)
     orderSummary.classList.remove('hidden');
   }
 
-  // Network button clicks
   networkBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       networkBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       selectedNetwork = btn.dataset.network;
-      // Reset selection
       selectedPlan = null;
       orderSummary.classList.add('hidden');
       loadPlans(selectedNetwork);
     });
   });
 
-  // Phone input change
   phoneInput.addEventListener('input', updateSummary);
 
-  // Buy Now
   buyNowBtn.addEventListener('click', async () => {
     if (!selectedPlan || !phoneInput.value.trim()) {
       alert('Please select a plan and enter a phone number.');
@@ -111,12 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Disable button to prevent double click
     buyNowBtn.disabled = true;
     buyNowBtn.textContent = 'Processing...';
 
     try {
-      // Initiate order on backend
       const orderData = {
         network: selectedNetwork,
         package_size: selectedPlan.package_size,
@@ -125,21 +110,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await window.api.initiateOrder(orderData);
       const { orderId, transactionRef, amount, paystackKey, accessCode } = response;
 
-      // Paystack popup
+      // Use the `amount` from the backend (selling price after markup)
+      const amountInPesewas = Math.round(amount * 100);
+
       const handler = PaystackPop.setup({
         key: paystackKey,
-        email: 'customer@example.com', // we can ask for email later
-        amount: amount * 100, // in pesewas
+        email: 'customer@example.com', // prompt user for email if needed
+        amount: amountInPesewas,
         currency: 'GHS',
         ref: transactionRef,
         callback: (resp) => {
-          // Payment successful – redirect or show confirmation
           alert('Payment successful! Your order is being processed.');
-          // Redirect to order status page
-          window.location.href = `/order-status.html?orderId=${orderId}`;
+          window.location.href = `order-status.html?orderId=${orderId}`;
         },
         onClose: () => {
-          // User closed popup
           buyNowBtn.disabled = false;
           buyNowBtn.textContent = 'Buy Now';
         },
