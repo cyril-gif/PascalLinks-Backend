@@ -78,10 +78,10 @@
       color: var(--primary);
     }
 
-    /* ===== MAIN CONTENT – extra top padding ===== */
+    /* ===== MAIN CONTENT – extra top padding, reduced bottom ===== */
     .dashboard-main {
       flex: 1;
-      padding: 2rem 1.2rem 2rem; /* increased top padding */
+      padding: 2rem 1.2rem 0.5rem;  /* bottom padding reduced */
       max-width: 1100px;
       margin: 0 auto;
       width: 100%;
@@ -92,7 +92,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
-      margin: 0 0 2rem 0; /* removed top margin, added bottom */
+      margin: 0 0 2rem 0;
     }
     .stat-card {
       background: #fff;
@@ -135,7 +135,7 @@
       border-radius: 16px;
       padding: 1.2rem 1.2rem 1.5rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;  /* reduced from 2rem */
     }
     .orders-header {
       display: flex;
@@ -146,7 +146,7 @@
       margin-bottom: 1rem;
     }
     .orders-header h2 {
-      font-size: 1.2rem;
+      font-size: 1.4rem;  /* increased */
       font-weight: 700;
       color: var(--primary);
       margin: 0;
@@ -189,7 +189,7 @@
       background: var(--gold-light);
     }
 
-    /* ===== TABLE ===== */
+    /* ===== TABLE – LARGER ===== */
     .order-table-wrapper {
       overflow-x: auto;
       margin-top: 0.5rem;
@@ -197,11 +197,11 @@
     .order-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.8rem;
+      font-size: 0.9rem;  /* increased from 0.8rem */
     }
     .order-table th {
       text-align: left;
-      padding: 0.5rem 0.3rem;
+      padding: 0.6rem 0.4rem;  /* increased */
       background: #f8f9fa;
       color: #495057;
       font-weight: 600;
@@ -209,7 +209,7 @@
       white-space: nowrap;
     }
     .order-table td {
-      padding: 0.5rem 0.3rem;
+      padding: 0.6rem 0.4rem;  /* increased */
       border-bottom: 1px solid #f1f3f5;
       color: #212529;
     }
@@ -217,9 +217,9 @@
       background: #f8f9fa;
     }
     .status-badge {
-      padding: 0.15rem 0.6rem;
+      padding: 0.2rem 0.7rem;
       border-radius: 30px;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 600;
       display: inline-block;
       text-transform: capitalize;
@@ -283,11 +283,14 @@
       }
       .order-table th,
       .order-table td {
-        padding: 0.3rem 0.2rem;
-        font-size: 0.7rem;
+        padding: 0.4rem 0.3rem;   /* increased */
+        font-size: 0.8rem;        /* increased */
       }
       .dashboard-main {
-        padding: 1.5rem 0.8rem;
+        padding: 1.5rem 0.8rem 0.5rem;
+      }
+      .orders-header h2 {
+        font-size: 1.2rem;
       }
     }
     @media (max-width: 480px) {
@@ -306,12 +309,12 @@
       }
       .order-table th,
       .order-table td {
-        padding: 0.2rem 0.1rem;
-        font-size: 0.6rem;
+        padding: 0.3rem 0.2rem;
+        font-size: 0.75rem;       /* increased */
       }
       .status-badge {
-        font-size: 0.55rem;
-        padding: 0.1rem 0.4rem;
+        font-size: 0.6rem;
+        padding: 0.1rem 0.5rem;
       }
       .orders-section {
         padding: 0.8rem;
@@ -339,7 +342,7 @@
     </div>
   </header>
 
-  <!-- ===== MAIN CONTENT – extra padding top ===== -->
+  <!-- ===== MAIN CONTENT ===== -->
   <main class="dashboard-main">
     <!-- Stats Cards -->
     <div class="stats-grid" id="statsContainer">
