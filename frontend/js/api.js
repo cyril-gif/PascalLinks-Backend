@@ -5,9 +5,8 @@
  * All endpoints are relative to the backend base URL.
  */
 
-const API_BASE = window.location.origin.includes('localhost')
-  ? 'http://localhost:5000/api'        // development
-  : 'https://https://pascallinks-frontend.onrender.com/api';    // production – set correctly
+// 👇 Use your Render backend URL (no trailing slash)
+const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
 
 /**
  * Generic fetch wrapper with error handling.
@@ -46,7 +45,7 @@ async function apiCall(endpoint, method = 'GET', body = null, token = null) {
  * Fetch plans for a given network.
  */
 async function fetchPlans(network) {
-  return apiCall(`/plans/${network}`); // we need a plans route – assume exists
+  return apiCall(`/plans/${network}`);
 }
 
 /**
@@ -64,4 +63,4 @@ async function confirmPayment(reference) {
 }
 
 // Expose globally for use in app.js
-window.api = { fetchPlans, initiateOrder, confirmPayment };
+window.api = { fetchPlans, initiateOrder, confirmPayment, API_BASE };
