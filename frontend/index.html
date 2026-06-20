@@ -3,112 +3,214 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>PascalLinks - Buy MTN Data in Ghana</title>
-  <!-- Paystack script -->
+  <title>PascalLinks – Buy MTN Data Instantly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <script src="https://js.paystack.co/v1/inline.js"></script>
-  <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="header">
-    <div class="container">
-      <h1 class="logo">📶 PascalLinks</h1>
-      <nav>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">📶 Pascal<span>Links</span></a>
+      <nav class="nav-links">
+        <a href="login.html" class="nav-link">Login</a>
+        <a href="register.html" class="nav-link btn-outline">Register</a>
       </nav>
     </div>
   </header>
 
-  <main>
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="container">
-        <h2>Buy MTN Data Bundles Instantly</h2>
-        <p>Best prices for MTN data – delivered in seconds.</p>
-        <div class="network-logos">
-          <span class="logo-mtn">MTN</span>
-          <!-- Only MTN logo shown -->
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <span class="hero-badge">🇬🇭 Ghana's Trusted Reseller</span>
+        <h1>Buy MTN Data <br>in <span>Seconds</span></h1>
+        <p>Instant delivery. Best prices. No hidden fees. <br>Top up your phone in less than 2 minutes.</p>
+        <div class="hero-actions">
+          <a href="#purchase" class="btn-primary">Buy Data Now</a>
+          <a href="#how-it-works" class="btn-text">How it works →</a>
         </div>
       </div>
-    </section>
-
-    <!-- Purchase Flow -->
-    <section class="purchase-section">
-      <div class="container">
-        <h3>Select Your Plan</h3>
-
-        <!-- Network selector – only MTN -->
-        <div class="network-selector">
-          <button class="network-btn active" data-network="mtn">MTN</button>
-          <!-- Removed Telecel, AirtelTigo, Bigtime buttons -->
+      <div class="hero-visual">
+        <div class="hero-phone-mock">
+          <span>📱</span>
+          <div class="mock-badge">1GB · GHS 4.60</div>
         </div>
-
-        <div id="planList" class="plan-grid">
-          <!-- Plans will be rendered here by JavaScript -->
-          <p class="loading">Loading plans...</p>
-        </div>
-
-        <div class="order-form">
-          <div class="form-group">
-            <label for="phone">Beneficiary Phone Number</label>
-            <input type="tel" id="phone" placeholder="e.g., 0241234567" required>
-          </div>
-          <div id="orderSummary" class="order-summary hidden">
-            <h4>Order Summary</h4>
-            <p><strong>Network:</strong> <span id="summaryNetwork"></span></p>
-            <p><strong>Plan:</strong> <span id="summaryPlan"></span></p>
-            <p><strong>Phone:</strong> <span id="summaryPhone"></span></p>
-            <p><strong>Price:</strong> GHS <span id="summaryPrice"></span></p>
-            <button id="buyNowBtn" class="btn-primary">Buy Now</button>
-          </div>
-        </div>
+        <div class="floating-badge top">⚡ Instant</div>
+        <div class="floating-badge bottom">💰 Best Price</div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- How It Works -->
-    <section class="how-it-works">
-      <div class="container">
-        <h3>How It Works</h3>
-        <div class="steps">
-          <div class="step"><span>1</span> Select your MTN plan</div>
-          <div class="step"><span>2</span> Enter phone number</div>
-          <div class="step"><span>3</span> Pay &amp; get data instantly</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Testimonials & FAQ -->
-    <section class="testimonials">
-      <div class="container">
-        <h3>What Our Customers Say</h3>
-        <blockquote>"Fast and reliable – got my MTN bundle in seconds!"</blockquote>
-        <blockquote>"Best MTN data prices in Ghana. Highly recommend."</blockquote>
-      </div>
-    </section>
-
-    <section class="faq">
-      <div class="container">
-        <h3>Frequently Asked Questions</h3>
-        <details>
-          <summary>How soon will I receive my data?</summary>
-          <p>Data is delivered instantly after successful payment, usually within 1 minute.</p>
-        </details>
-        <details>
-          <summary>What if I enter the wrong number?</summary>
-          <p>Please double‑check before paying. We cannot reverse delivery to a wrong number.</p>
-        </details>
-      </div>
-    </section>
-  </main>
-
-  <footer>
+  <!-- ===== NETWORK BADGE ===== -->
+  <section class="network-section">
     <div class="container">
-      <p>&copy; 2026 PascalLinks. All rights reserved.</p>
+      <p class="network-label">Available Network</p>
+      <div class="network-badge">
+        <span class="network-icon">📶</span>
+        <span class="network-name">MTN</span>
+        <span class="network-status">● Active</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PURCHASE FLOW ===== -->
+  <section class="purchase-section" id="purchase">
+    <div class="container">
+      <div class="section-header">
+        <h2>Choose Your <span>Data Plan</span></h2>
+        <p>Select a package, enter your phone number, and pay – we handle the rest.</p>
+      </div>
+
+      <!-- Plan Grid -->
+      <div id="planList" class="plan-grid">
+        <div class="loading-spinner">Loading plans...</div>
+      </div>
+
+      <!-- Order Form -->
+      <div class="order-card">
+        <div class="order-card-header">
+          <h3>Order Summary</h3>
+          <span class="step-indicator">Step 2 of 3</span>
+        </div>
+        <div class="form-group">
+          <label for="phone">📞 Beneficiary Phone Number</label>
+          <input type="tel" id="phone" placeholder="e.g., 024 123 4567" required>
+          <small>We'll send the data to this number.</small>
+        </div>
+        <div id="orderSummary" class="order-summary hidden">
+          <div class="summary-row">
+            <span>Network</span>
+            <span id="summaryNetwork">MTN</span>
+          </div>
+          <div class="summary-row">
+            <span>Plan</span>
+            <span id="summaryPlan">—</span>
+          </div>
+          <div class="summary-row">
+            <span>Beneficiary</span>
+            <span id="summaryPhone">—</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="summaryPrice">GHS 0.00</span>
+          </div>
+          <button id="buyNowBtn" class="btn-primary btn-large">Buy Now</button>
+        </div>
+        <div id="orderPlaceholder" class="order-placeholder">
+          <p>👆 Select a plan above to continue.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2>How It <span>Works</span></h2>
+        <p>Three simple steps to get your data bundle.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-icon">📋</div>
+          <h4>Select Plan</h4>
+          <p>Choose the MTN package that fits your needs.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-icon">📞</div>
+          <h4>Enter Phone</h4>
+          <p>Provide the Ghana number you want to top up.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-icon">💳</div>
+          <h4>Pay & Enjoy</h4>
+          <p>Pay securely and get your data in seconds.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <h2>What Our <span>Customers</span> Say</h2>
+      </div>
+      <div class="testimonial-grid">
+        <blockquote class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p>"I received my data instantly. No delays, no hassle. I'm definitely buying again."</p>
+          <cite>— Kojo A.</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p>"Best MTN data prices in Ghana. The process is so simple and fast!"</p>
+          <cite>— Abena M.</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p>"I love the convenience. I can top up my family's phones from anywhere."</p>
+          <cite>— Kofi B.</cite>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="faq">
+    <div class="container">
+      <div class="section-header">
+        <h2>Frequently Asked <span>Questions</span></h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>How soon will I receive my data?</summary>
+          <p>Delivery is instant. After successful payment, your data is sent to the provided number within 1 minute.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What if I enter the wrong phone number?</summary>
+          <p>Please double-check before paying. We cannot reverse delivery once it's sent. Contact support immediately if you made an error.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Which networks do you support?</summary>
+          <p>Currently we support MTN only. More networks will be added soon.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is my payment secure?</summary>
+          <p>Yes. Payments are processed by Paystack, a secure payment gateway. We never store your card details.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo">📶 Pascal<span>Links</span></span>
+        <p>Ghana's trusted data reseller. Fast, reliable, and affordable.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 PascalLinks. All rights reserved.
+      </div>
     </div>
   </footer>
 
-  <!-- Custom JavaScript -->
+  <!-- Scripts -->
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
 </body>
