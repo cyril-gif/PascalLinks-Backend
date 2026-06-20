@@ -1,11 +1,8 @@
 /**
- * app.js – Updated for Dropdown Selection
+ * app.js – Premium Landing Page
  * ------------------------------------------------
- * Manages the purchase flow:
- * - Loads MTN plans into a dropdown
- * - Tracks selected plan
- * - Updates order summary
- * - Handles Paystack payment
+ * Loads MTN plans into a dropdown, handles selection,
+ * phone validation, and Paystack payment.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -31,11 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
       planDropdown.innerHTML = '<option value="">— Select a package —</option>';
       data.forEach(plan => {
         const option = document.createElement('option');
+        // Store the entire plan as a JSON string in the value
         option.value = JSON.stringify(plan);
         option.textContent = `${plan.name || plan.package_size} - GHS ${formatPrice(plan.price)}`;
         planDropdown.appendChild(option);
       });
-      // Add a small note if no plans
       if (data.length === 0) {
         planDropdown.innerHTML = '<option value="">No plans available</option>';
       }
@@ -45,35 +42,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Update order summary when dropdown changes
-  planDropdown.addEventListener('change', () => {
-    const value = planDropdown.value;
+  // When dropdown changes, update selectedPlan and refresh summary
+  planDropdown.addEventListener('change', function() {
+    const value = this.value;
     if (!value) {
       selectedPlan = null;
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
       return;
     }
-    selectedPlan = JSON.parse(value);
-    updateSummary();
+    try {
+      selectedPlan = JSON.parse(value);
+      // Ensure the plan has the required fields
+      if (!selectedPlan.package_size) {
+        selectedPlan.package_size = selectedPlan.name || '';
+      }
+      updateSummary();
+    } catch (e) {
+      console.error('Error parsing plan:', e);
+      selectedPlan = null;
+      orderSummary.classList.add('hidden');
+      orderPlaceholder.style.display = 'block';
+    }
   });
 
-  // Update summary when phone number changes
+  // When phone changes, update summary
   phoneInput.addEventListener('input', updateSummary);
 
   function updateSummary() {
     const phone = phoneInput.value.trim();
+    // If no plan or no phone, hide summary and show placeholder
     if (!selectedPlan || !phone) {
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
       return;
     }
+    // Validate phone format (Ghana)
     if (!/^0[2357]\d{8}$/.test(phone)) {
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
+      // Optionally show a small error message
       return;
     }
-    // Show summary
+    // All good – show summary
     summaryNetwork.textContent = 'MTN';
     summaryPlan.textContent = selectedPlan.name || selectedPlan.package_size;
     summaryPhone.textContent = phone;
@@ -116,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const handler = PaystackPop.setup({
         key: paystackKey,
-        email: 'customer@example.com', // consider asking user for email
+        email: 'customer@example.com', // You can later ask the user for email
         amount: amountInPesewas,
         currency: 'GHS',
         ref: transactionRef,
