@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register - DataHub</title>
+  <title>Register - PascalLinks</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     .auth-container { max-width: 400px; margin: 3rem auto; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: var(--shadow); }
@@ -53,7 +53,6 @@
   </div>
 
   <script>
-    // 👇 Backend base URL
     const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
 
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
@@ -100,12 +99,15 @@
             window.location.href = 'login.html';
           }, 1500);
         } else {
-          errorMsg.textContent = data.error || 'Registration failed. Please try again.';
+          // Show the actual error from the backend
+          errorMsg.textContent = data.error || data.details || 'Registration failed. Please try again.';
           errorMsg.style.display = 'block';
+          console.error('Registration error:', data);
         }
       } catch (err) {
         errorMsg.textContent = 'Network error. Please try again.';
         errorMsg.style.display = 'block';
+        console.error('Network error:', err);
       }
     });
   </script>
