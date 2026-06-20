@@ -4,43 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard – PascalLinks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Dashboard‑specific styles */
+    /* ===== DASHBOARD PREMIUM STYLES ===== */
     .dashboard-body {
       background: #f4f6fa;
       min-height: 100vh;
+      font-family: 'Inter', sans-serif;
     }
+    /* Header – same as landing but compact */
     .dashboard-header {
       background: var(--primary);
       color: #fff;
-      padding: 1rem 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 0.6rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
     }
     .dashboard-header .container {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
     }
     .dashboard-header .logo {
-      font-size: 1.6rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .dashboard-header .logo span {
+      color: var(--gold);
     }
     .user-area {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.8rem;
     }
-    .user-area .user-name {
-      font-weight: 600;
-    }
-    .user-area .user-avatar {
-      width: 40px;
-      height: 40px;
+    .user-avatar {
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       background: var(--gold);
       display: flex;
@@ -48,16 +54,21 @@
       justify-content: center;
       font-weight: 700;
       color: var(--primary);
-      font-size: 1.2rem;
+      font-size: 1rem;
+    }
+    .user-name {
+      font-weight: 600;
+      font-size: 0.9rem;
     }
     .logout-btn {
       background: transparent;
       border: 1px solid var(--gold);
       color: var(--gold);
-      padding: 0.4rem 1.2rem;
+      padding: 0.2rem 1rem;
       border-radius: 30px;
       cursor: pointer;
       font-weight: 600;
+      font-size: 0.75rem;
       transition: all 0.2s;
     }
     .logout-btn:hover {
@@ -65,119 +76,144 @@
       color: var(--primary);
     }
 
-    /* Stats cards */
+    /* ===== STATS CARDS ===== */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
     }
     .stat-card {
       background: #fff;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      border-left: 6px solid var(--gold);
+      border-radius: 14px;
+      padding: 1rem 0.8rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      border-left: 4px solid var(--gold);
+      text-align: center;
       transition: transform 0.2s;
     }
     .stat-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-2px);
     }
     .stat-card .stat-label {
-      font-size: 0.85rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #6c757d;
       font-weight: 600;
     }
     .stat-card .stat-number {
-      font-size: 2rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: var(--primary);
-      margin-top: 0.3rem;
+      margin-top: 0.1rem;
+      line-height: 1.2;
     }
     .stat-card .stat-sub {
-      font-size: 0.9rem;
-      color: #6c757d;
-      margin-top: 0.2rem;
+      font-size: 0.65rem;
+      color: #adb5bd;
+      margin-top: 0.1rem;
     }
+    /* Different border colors for variety */
+    .stat-card:nth-child(2) { border-left-color: #20c997; }
+    .stat-card:nth-child(3) { border-left-color: #ffc107; }
+    .stat-card:nth-child(4) { border-left-color: #17a2b8; }
 
-    /* Orders section */
+    /* ===== ORDERS SECTION ===== */
     .orders-section {
       background: #fff;
       border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin-top: 1.5rem;
+      padding: 1.2rem 1.2rem 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      margin-bottom: 2rem;
     }
-    .orders-section .section-header {
+    .orders-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 1.5rem;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
     }
-    .orders-section .section-header h2 {
-      font-size: 1.4rem;
+    .orders-header h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
       color: var(--primary);
       margin: 0;
     }
-    .order-filter {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+    .orders-header h2 span {
+      color: var(--gold);
     }
-    .order-filter input, .order-filter select {
-      padding: 0.4rem 0.8rem;
+    .filter-group {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-group input,
+    .filter-group select {
+      padding: 0.3rem 0.6rem;
       border: 1px solid #ced4da;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
+      background: #fff;
+      transition: border 0.2s;
     }
-    .order-filter button {
+    .filter-group input:focus,
+    .filter-group select:focus {
+      border-color: var(--gold);
+      outline: none;
+    }
+    .filter-group button {
       background: var(--gold);
       border: none;
-      padding: 0.4rem 1.2rem;
+      padding: 0.3rem 1rem;
       border-radius: 30px;
       font-weight: 600;
+      font-size: 0.75rem;
       color: var(--primary);
       cursor: pointer;
       transition: background 0.2s;
     }
-    .order-filter button:hover {
+    .filter-group button:hover {
       background: var(--gold-light);
     }
 
+    /* ===== TABLE ===== */
     .order-table-wrapper {
       overflow-x: auto;
+      margin-top: 0.5rem;
     }
     .order-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
     .order-table th {
       text-align: left;
-      padding: 0.8rem 0.5rem;
+      padding: 0.5rem 0.3rem;
       background: #f8f9fa;
       color: #495057;
       font-weight: 600;
       border-bottom: 2px solid #e9ecef;
+      white-space: nowrap;
     }
     .order-table td {
-      padding: 0.8rem 0.5rem;
-      border-bottom: 1px solid #e9ecef;
+      padding: 0.5rem 0.3rem;
+      border-bottom: 1px solid #f1f3f5;
       color: #212529;
     }
     .order-table tr:hover td {
       background: #f8f9fa;
     }
     .status-badge {
-      padding: 0.2rem 0.7rem;
+      padding: 0.15rem 0.6rem;
       border-radius: 30px;
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       font-weight: 600;
       display: inline-block;
       text-transform: capitalize;
+      white-space: nowrap;
     }
     .status-pending_payment { background: #fff3cd; color: #856404; }
     .status-processing { background: #cce5ff; color: #004085; }
@@ -188,53 +224,89 @@
 
     .no-orders {
       text-align: center;
-      padding: 2rem;
+      padding: 1.5rem;
       color: #6c757d;
+      font-size: 0.9rem;
     }
     .no-orders a {
       color: var(--gold);
       font-weight: 600;
     }
-
-    /* Loading */
     .loading-spinner {
       text-align: center;
-      padding: 2rem;
+      padding: 1.5rem;
       color: var(--primary);
+      font-weight: 500;
     }
 
-    /* Responsive */
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      .dashboard-header .container {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: stretch;
-      }
-      .user-area {
-        justify-content: flex-end;
-      }
       .stats-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
       }
-      .order-table-wrapper {
-        font-size: 0.8rem;
+      .stat-card .stat-number {
+        font-size: 1.3rem;
       }
-      .order-table th, .order-table td {
-        padding: 0.4rem 0.2rem;
+      .orders-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-group {
+        justify-content: stretch;
+      }
+      .filter-group input,
+      .filter-group select {
+        flex: 1;
+        min-width: 80px;
+      }
+      .order-table th,
+      .order-table td {
+        padding: 0.3rem 0.2rem;
+        font-size: 0.7rem;
       }
     }
     @media (max-width: 480px) {
       .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      .stat-card {
+        padding: 0.6rem 0.4rem;
+      }
+      .stat-card .stat-number {
+        font-size: 1.1rem;
+      }
+      .stat-card .stat-label {
+        font-size: 0.55rem;
+      }
+      .order-table th,
+      .order-table td {
+        padding: 0.2rem 0.1rem;
+        font-size: 0.6rem;
+      }
+      .status-badge {
+        font-size: 0.55rem;
+        padding: 0.1rem 0.4rem;
+      }
+      .orders-section {
+        padding: 0.8rem;
+      }
+      .dashboard-header .logo {
+        font-size: 1rem;
+      }
+      .user-area .user-name {
+        display: none;
       }
     }
   </style>
 </head>
 <body class="dashboard-body">
-  <!-- Header -->
+
+  <!-- ===== HEADER ===== -->
   <header class="dashboard-header">
     <div class="container">
-      <div class="logo">📶 PascalLinks</div>
+      <a href="index.html" class="logo">📶 Pascal<span>Links</span></a>
       <div class="user-area">
         <span class="user-avatar" id="userAvatar">U</span>
         <span class="user-name" id="userName">User</span>
@@ -243,7 +315,9 @@
     </div>
   </header>
 
-  <main class="container" style="padding: 0 1rem 2rem;">
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container" style="padding: 0 1.2rem 2rem;">
+
     <!-- Stats Cards -->
     <div class="stats-grid" id="statsContainer">
       <div class="stat-card">
@@ -253,34 +327,33 @@
       </div>
       <div class="stat-card">
         <div class="stat-label">Total Spent</div>
-        <div class="stat-number" id="totalSpent">GHS 0.00</div>
+        <div class="stat-number" id="totalSpent">GHS 0</div>
         <div class="stat-sub">All time</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Pending</div>
         <div class="stat-number" id="pendingOrders">0</div>
-        <div class="stat-sub">Awaiting completion</div>
+        <div class="stat-sub">Processing</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Completed</div>
         <div class="stat-number" id="completedOrders">0</div>
-        <div class="stat-sub">Successfully delivered</div>
+        <div class="stat-sub">Delivered</div>
       </div>
     </div>
 
-    <!-- Orders Table -->
+    <!-- Orders Section -->
     <div class="orders-section">
-      <div class="section-header">
-        <h2>📋 Order History</h2>
-        <div class="order-filter">
-          <input type="text" id="searchInput" placeholder="Search by phone..." />
+      <div class="orders-header">
+        <h2>📋 Order <span>History</span></h2>
+        <div class="filter-group">
+          <input type="text" id="searchInput" placeholder="Search phone..." />
           <select id="statusFilter">
-            <option value="">All statuses</option>
-            <option value="pending_payment">Pending Payment</option>
+            <option value="">All</option>
+            <option value="pending_payment">Pending</option>
             <option value="processing">Processing</option>
             <option value="completed">Completed</option>
             <option value="failed">Failed</option>
-            <option value="payment_failed">Payment Failed</option>
           </select>
           <button id="applyFilterBtn">Apply</button>
         </div>
@@ -291,7 +364,13 @@
     </div>
   </main>
 
+  <!-- ===== FOOTER (minimal) ===== -->
+  <footer style="background:var(--primary);color:#fff;padding:0.8rem 0;text-align:center;font-size:0.7rem;opacity:0.6;">
+    <div class="container">&copy; 2026 PascalLinks. All rights reserved.</div>
+  </footer>
+
   <script>
+    // ===== DASHBOARD LOGIC =====
     const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -315,7 +394,7 @@
 
       let allOrders = [];
 
-      // Fetch user profile
+      // ----- Fetch user profile -----
       try {
         const profileRes = await fetch(`${API_BASE}/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -332,7 +411,7 @@
         return;
       }
 
-      // Fetch orders
+      // ----- Fetch orders -----
       async function loadOrders() {
         try {
           const res = await fetch(`${API_BASE}/orders`, {
@@ -347,7 +426,7 @@
         }
       }
 
-      // Render filtered orders
+      // ----- Render filtered orders -----
       function renderOrders(orders) {
         const search = searchInput.value.trim().toLowerCase();
         const status = statusFilter.value;
@@ -369,42 +448,28 @@
           return;
         }
 
-        let html = `
-          <div class="order-table-wrapper">
-            <table class="order-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Network</th>
-                  <th>Plan</th>
-                  <th>Beneficiary</th>
-                  <th>Amount (GHS)</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-        `;
+        let html = `<div class="order-table-wrapper"><table class="order-table"><thead><tr>
+          <th>Date</th><th>Network</th><th>Plan</th><th>Beneficiary</th><th>Amount</th><th>Status</th>
+        </tr></thead><tbody>`;
         filtered.forEach(order => {
           const date = new Date(order.createdAt).toLocaleDateString('en-GH', {
             day: '2-digit', month: 'short', year: 'numeric'
           });
           const statusClass = `status-${order.status}`;
-          html += `
-            <tr>
-              <td>${date}</td>
-              <td>${order.network.toUpperCase()}</td>
-              <td>${order.package_size}</td>
-              <td>${order.beneficiary}</td>
-              <td>${order.sellingPrice.toFixed(2)}</td>
-              <td><span class="status-badge ${statusClass}">${order.status.replace('_', ' ')}</span></td>
-            </tr>
-          `;
+          html += `<tr>
+            <td>${date}</td>
+            <td>${order.network.toUpperCase()}</td>
+            <td>${order.package_size}</td>
+            <td>${order.beneficiary}</td>
+            <td>${order.sellingPrice.toFixed(2)}</td>
+            <td><span class="status-badge ${statusClass}">${order.status.replace('_', ' ')}</span></td>
+          </tr>`;
         });
         html += '</tbody></table></div>';
         ordersContainer.innerHTML = html;
       }
 
-      // Update stats
+      // ----- Update stats -----
       function updateStats(orders) {
         const total = orders.length;
         const spent = orders.reduce((sum, o) => sum + (o.sellingPrice || 0), 0);
@@ -412,22 +477,16 @@
         const completed = orders.filter(o => o.status === 'completed').length;
 
         totalOrdersEl.textContent = total;
-        totalSpentEl.textContent = `GHS ${spent.toFixed(2)}`;
+        totalSpentEl.textContent = `GHS ${spent.toFixed(0)}`;
         pendingOrdersEl.textContent = pending;
         completedOrdersEl.textContent = completed;
       }
 
-      // Apply filters
-      applyFilterBtn.addEventListener('click', () => {
-        renderOrders(allOrders);
-      });
-
-      // Enter key on search
+      // ----- Event listeners -----
+      applyFilterBtn.addEventListener('click', () => renderOrders(allOrders));
       searchInput.addEventListener('keyup', (e) => {
         if (e.key === 'Enter') renderOrders(allOrders);
       });
-
-      // Logout
       document.getElementById('logoutBtn').addEventListener('click', () => {
         localStorage.removeItem('token');
         window.location.href = 'index.html';
