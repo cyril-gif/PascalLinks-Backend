@@ -627,4 +627,37 @@ a {
   .section-header h2 {
     font-size: 1.6rem;
   }
+  /* ===== BRAND ENHANCEMENTS ===== */
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
 }
+.hero-trust span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.tagline {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 500px;
+}
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+.footer-social span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+}
+
