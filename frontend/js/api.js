@@ -5,7 +5,7 @@
  * All endpoints are relative to the backend base URL.
  */
 
-// 👇 Backend URL (no trailing slash)
+// Backend URL (no trailing slash)
 const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
 
 /**
@@ -22,7 +22,6 @@ async function apiCall(endpoint, method = 'GET', body = null, token = null) {
   const options = {
     method,
     headers,
-    // credentials: 'include',   // <-- REMOVED to fix CORS
   };
   if (body) {
     options.body = JSON.stringify(body);
@@ -32,7 +31,6 @@ async function apiCall(endpoint, method = 'GET', body = null, token = null) {
     const response = await fetch(`${API_BASE}${endpoint}`, options);
     const data = await response.json();
     if (!response.ok) {
-      // Use backend error message if available
       throw new Error(data.details || data.error || 'API request failed');
     }
     return data;
@@ -51,9 +49,11 @@ async function fetchPlans(network) {
 
 /**
  * Initiate an order (payment).
+ * @param {object} orderData - { network, package_size, beneficiary }
+ * @param {string|null} token - JWT token (if user is logged in)
  */
-async function initiateOrder(orderData) {
-  return apiCall('/orders/initiate', 'POST', orderData);
+async function initiateOrder(orderData, token = null) {
+  return apiCall('/orders/initiate', 'POST', orderData, token);
 }
 
 /**
@@ -63,10 +63,10 @@ async function confirmPayment(reference) {
   return apiCall('/orders/confirm', 'POST', { reference });
 }
 
-// Expose globally for use in app.js
-window.api = { 
+// Expose globally
+window.api = {
   API_BASE,
-  fetchPlans, 
-  initiateOrder, 
-  confirmPayment 
+  fetchPlans,
+  initiateOrder,
+  confirmPayment
 };
