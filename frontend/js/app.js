@@ -4,6 +4,7 @@
  * Main frontend logic for the data bundle purchase flow.
  * Handles network selection (MTN only), plan fetching, phone input,
  * order summary, and Paystack payment integration.
+ * Sends JWT token if user is logged in to associate orders.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     summaryNetwork.textContent = selectedNetwork.toUpperCase();
     summaryPlan.textContent = selectedPlan.name || selectedPlan.package_size;
     summaryPhone.textContent = phone;
-    summaryPrice.textContent = formatPrice(selectedPlan.price); // base price (will be overwritten by backend response)
+    summaryPrice.textContent = formatPrice(selectedPlan.price);
     orderSummary.classList.remove('hidden');
   }
 
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   phoneInput.addEventListener('input', updateSummary);
 
+  // Buy Now – send token if logged in
   buyNowBtn.addEventListener('click', async () => {
     if (!selectedPlan || !phoneInput.value.trim()) {
       alert('Please select a plan and enter a phone number.');
@@ -107,15 +109,19 @@ document.addEventListener('DOMContentLoaded', () => {
         package_size: selectedPlan.package_size,
         beneficiary: phone,
       };
-      const response = await window.api.initiateOrder(orderData);
+
+      // Get token if user is logged in
+      const token = localStorage.getItem('token') || null;
+
+      // Initiate order – pass token
+      const response = await window.api.initiateOrder(orderData, token);
       const { orderId, transactionRef, amount, paystackKey, accessCode } = response;
 
-      // Use the `amount` from the backend (selling price after markup)
       const amountInPesewas = Math.round(amount * 100);
 
       const handler = PaystackPop.setup({
         key: paystackKey,
-        email: 'customer@example.com', // prompt user for email if needed
+        email: 'customer@example.com',
         amount: amountInPesewas,
         currency: 'GHS',
         ref: transactionRef,
