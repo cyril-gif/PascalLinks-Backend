@@ -39,14 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(`✅ Plans fetched:`, data);
       if (data && data.length > 0) {
         populateDropdown(data);
-        const labelMap = {
-          'mtn_datamart': 'MTN (DataMart)',
-          'mtn_gigsgrid': 'MTN (Gigsgrid)',
-          'airtel_tigo_datamart': 'AirtelTigo',
-          'telecel_datamart': 'Telecel'
+        // Show only network name (no provider)
+        const networkNames = {
+          'mtn': 'MTN',
+          'airtel_tigo': 'AirtelTigo',
+          'telecel': 'Telecel'
         };
-        const key = `${network}_${provider}`;
-        networkLabel.textContent = labelMap[key] || `${network} (${provider}) packages`;
+        networkLabel.textContent = networkNames[network] + ' packages';
       } else {
         console.warn('⚠️ No plans, using mock data');
         useMockPlans(network, provider);
@@ -75,32 +74,33 @@ document.addEventListener('DOMContentLoaded', () => {
   function useMockPlans(network, provider) {
     const mockData = {
       'mtn_datamart': [
-        { package_size: '1GB', price: 4.60, name: '1GB' },
-        { package_size: '2GB', price: 9.20, name: '2GB' },
-        { package_size: '5GB', price: 23.00, name: '5GB' },
-        { package_size: '10GB', price: 45.00, name: '10GB' },
+        { package_size: '1GB', price: 4.90, name: '1GB' },
+        { package_size: '2GB', price: 9.80, name: '2GB' },
+        { package_size: '5GB', price: 24.50, name: '5GB' },
+        { package_size: '10GB', price: 47.75, name: '10GB' },
       ],
       'mtn_gigsgrid': [
-        { package_size: '1GB', price: 4.60, name: '1GB' },
-        { package_size: '2GB', price: 9.20, name: '2GB' },
-        { package_size: '5GB', price: 23.00, name: '5GB' },
-        { package_size: '10GB', price: 45.00, name: '10GB' },
+        { package_size: '1GB', price: 4.70, name: '1GB' },
+        { package_size: '2GB', price: 9.40, name: '2GB' },
+        { package_size: '5GB', price: 23.50, name: '5GB' },
+        { package_size: '10GB', price: 47.00, name: '10GB' },
       ],
       'airtel_tigo_datamart': [
-        { package_size: '1GB', price: 4.50, name: '1GB' },
-        { package_size: '2GB', price: 8.90, name: '2GB' },
-        { package_size: '5GB', price: 22.00, name: '5GB' },
+        { package_size: '1GB', price: 4.84, name: '1GB' },
+        { package_size: '2GB', price: 10.23, name: '2GB' },
+        { package_size: '5GB', price: 23.89, name: '5GB' },
       ],
       'telecel_datamart': [
-        { package_size: '5GB', price: 22.00, name: '5GB' },
-        { package_size: '10GB', price: 42.00, name: '10GB' },
-        { package_size: '20GB', price: 80.00, name: '20GB' },
+        { package_size: '5GB', price: 23.89, name: '5GB' },
+        { package_size: '10GB', price: 44.71, name: '10GB' },
+        { package_size: '20GB', price: 85.50, name: '20GB' },
       ]
     };
     const key = `${network}_${provider}`;
     const plans = mockData[key] || mockData['mtn_datamart'];
     populateDropdown(plans);
-    networkLabel.textContent = `${network} (${provider}) packages (mock)`;
+    const networkNames = { mtn: 'MTN', airtel_tigo: 'AirtelTigo', telecel: 'Telecel' };
+    networkLabel.textContent = networkNames[network] + ' packages (mock)';
   }
 
   // ----- Network tab switching -----
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----- Phone input -----
   phoneInput.addEventListener('input', updateSummary);
 
-  // ----- Update summary -----
+  // ----- Update summary (shows provider) -----
   function updateSummary() {
     const phone = phoneInput.value.trim();
     if (!selectedPlan || !phone || !/^0\d{9}$/.test(phone)) {
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         network: currentNetwork,
         package_size: selectedPlan.package_size,
         beneficiary: phone,
-        provider: currentProvider,   // send provider
+        provider: currentProvider,
       };
       console.log('📦 Order data:', orderData);
 
