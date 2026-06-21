@@ -3,43 +3,380 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Order Status - DataHub</title>
+  <title>Order Status – PascalLinks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    .status-container { max-width: 600px; margin: 2rem auto; padding: 1.5rem; background: #fff; border-radius: 16px; box-shadow: var(--shadow); }
-    .status-container h2 { text-align: center; color: var(--primary); margin-bottom: 1.5rem; }
-    .order-detail { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e9ecef; }
-    .order-detail:last-child { border-bottom: none; }
-    .order-detail .label { font-weight: 600; color: #495057; }
-    .order-detail .value { color: var(--primary); }
-    .status-badge-large { display: inline-block; padding: 0.4rem 1.2rem; border-radius: 30px; font-weight: bold; font-size: 1.1rem; margin: 0.5rem 0; }
-    .refresh-btn { background: var(--gold); border: none; padding: 0.5rem 1.5rem; border-radius: 30px; font-weight: bold; cursor: pointer; color: var(--primary); margin-top: 1rem; }
-    .refresh-btn:hover { background: var(--gold-light); }
-    .loading-spinner { text-align: center; padding: 2rem; color: var(--primary); }
-    .error-msg { color: #dc3545; text-align: center; }
-    .back-link { display: block; text-align: center; margin-top: 1.5rem; color: var(--primary); text-decoration: underline; }
-    .auto-refresh { font-size: 0.9rem; color: #6c757d; text-align: center; margin-top: 0.5rem; }
+    body {
+      background: #f4f6fa;
+      font-family: 'Inter', sans-serif;
+    }
+    .status-page {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 0 1.2rem;
+    }
+
+    /* ===== TRACKING CARD (same as index) ===== */
+    .track-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .track-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+    .track-tab {
+      background: #f1f3f5;
+      border: 2px solid transparent;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #495057;
+    }
+    .track-tab.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--primary);
+    }
+    .track-input-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .track-input-group input {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border: 2px solid #ced4da;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      transition: border 0.2s;
+    }
+    .track-input-group input:focus {
+      border-color: var(--gold);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(245,179,66,0.15);
+    }
+    .track-input-group .btn-primary {
+      padding: 0.7rem 1.5rem;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      background: var(--gold);
+      color: var(--primary);
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .track-input-group .btn-primary:hover {
+      background: var(--gold-light);
+    }
+    .track-result {
+      margin-top: 1.5rem;
+      border-top: 1px solid #e9ecef;
+      padding-top: 1.5rem;
+    }
+    .track-result.hidden { display: none; }
+    .track-order-item {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .track-order-item .order-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .track-order-item .order-plan {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .track-order-item .order-detail {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+    .track-order-item .order-status {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      text-transform: capitalize;
+    }
+    .no-orders {
+      text-align: center;
+      color: #6c757d;
+      padding: 1rem 0;
+    }
+
+    /* ===== SINGLE ORDER DISPLAY ===== */
+    .order-container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      padding: 1.5rem;
+    }
+    .order-container h2 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .order-detail {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .order-detail:last-child {
+      border-bottom: none;
+    }
+    .order-detail .label {
+      font-weight: 600;
+      color: #495057;
+    }
+    .order-detail .value {
+      color: var(--primary);
+    }
+    .status-badge-large {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+    .refresh-btn {
+      background: var(--gold);
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--primary);
+      margin-top: 1rem;
+    }
+    .refresh-btn:hover {
+      background: var(--gold-light);
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .auto-refresh {
+      font-size: 0.9rem;
+      color: #6c757d;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    .loading-spinner {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--primary);
+    }
+
+    /* status colours */
+    .status-pending_payment { background: #fff3cd; color: #856404; }
+    .status-processing { background: #cce5ff; color: #004085; }
+    .status-completed { background: #d4edda; color: #155724; }
+    .status-failed { background: #f8d7da; color: #721c24; }
+    .status-payment_failed { background: #f8d7da; color: #721c24; }
+    .status-retrying { background: #e2e3e5; color: #383d41; }
+
+    @media (max-width: 480px) {
+      .track-input-group {
+        flex-direction: column;
+      }
+      .track-input-group .btn-primary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="status-container" id="statusContainer">
-    <h2>📊 Order Status</h2>
-    <div id="orderContent">
+
+  <div class="status-page">
+
+    <!-- ===== TRACKING CARD ===== -->
+    <div class="track-card">
+      <div class="track-tabs">
+        <button class="track-tab active" data-search="phone">📱 Phone</button>
+        <button class="track-tab" data-search="reference">🔒 Reference</button>
+        <button class="track-tab" data-search="orderId">📈 Order ID</button>
+      </div>
+      <div class="track-form">
+        <div class="form-group" style="margin-bottom:0;">
+          <label for="trackInput" id="trackLabel" style="font-weight:600;font-size:0.85rem;">Enter phone number (e.g., 0241234567)</label>
+          <div class="track-input-group" style="margin-top:0.4rem;">
+            <input type="text" id="trackInput" placeholder="e.g., 0241234567" />
+            <button id="trackBtn" class="btn-primary">Track Order</button>
+          </div>
+        </div>
+      </div>
+      <div id="trackResult" class="track-result hidden">
+        <!-- Results rendered here -->
+      </div>
+    </div>
+
+    <!-- ===== SINGLE ORDER DISPLAY (from URL) ===== -->
+    <div id="orderContainer" class="order-container">
       <div class="loading-spinner">Loading order details...</div>
     </div>
+
   </div>
 
   <script>
+    // ================================================================
+    // 1. TRACKING LOGIC (same as index)
+    // ================================================================
     const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
 
-    (function() {
-      const container = document.getElementById('orderContent');
+    const trackTabs = document.querySelectorAll('.track-tab');
+    const trackInput = document.getElementById('trackInput');
+    const trackLabel = document.getElementById('trackLabel');
+    const trackBtn = document.getElementById('trackBtn');
+    const trackResult = document.getElementById('trackResult');
+    let searchType = 'phone';
+
+    trackTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        trackTabs.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        searchType = this.dataset.search;
+        const labels = {
+          phone: 'Enter phone number (e.g., 0241234567)',
+          reference: 'Enter order reference (e.g., PAY-123456)',
+          orderId: 'Enter order ID (e.g., 67a1b2c3d4e5f6g7h8i9j0k1)'
+        };
+        trackLabel.textContent = labels[searchType];
+        const placeholders = {
+          phone: 'e.g., 0241234567',
+          reference: 'e.g., PAY-123456',
+          orderId: 'e.g., 67a1b2c3d4e5f6g7h8i9j0k1'
+        };
+        trackInput.placeholder = placeholders[searchType];
+        trackInput.value = '';
+        trackResult.classList.add('hidden');
+      });
+    });
+
+    trackBtn.addEventListener('click', trackOrder);
+    trackInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') trackOrder();
+    });
+
+    async function trackOrder() {
+      const query = trackInput.value.trim();
+      if (!query) {
+        alert('Please enter a value to search.');
+        return;
+      }
+      trackBtn.disabled = true;
+      trackBtn.textContent = 'Searching...';
+
+      try {
+        let url = '';
+        if (searchType === 'phone') {
+          url = `/api/orders/by-phone?phone=${encodeURIComponent(query)}`;
+        } else if (searchType === 'reference') {
+          url = `/api/orders/by-reference?reference=${encodeURIComponent(query)}`;
+        } else if (searchType === 'orderId') {
+          url = `/api/orders/${query}`;
+        }
+
+        const token = localStorage.getItem('token') || null;
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const response = await fetch(url, { headers });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Order not found');
+        }
+
+        // If single order, wrap in array
+        const orders = Array.isArray(data) ? data : [data];
+        displayTrackResults(orders);
+
+      } catch (error) {
+        trackResult.classList.remove('hidden');
+        trackResult.innerHTML = `
+          <div class="no-orders">
+            <p>❌ ${error.message}</p>
+            <small>Please try again with a different search term.</small>
+          </div>
+        `;
+      } finally {
+        trackBtn.disabled = false;
+        trackBtn.textContent = 'Track Order';
+      }
+    }
+
+    function displayTrackResults(orders) {
+      trackResult.classList.remove('hidden');
+      if (orders.length === 0) {
+        trackResult.innerHTML = `
+          <div class="no-orders">
+            <p>🔍 No orders found</p>
+            <small>Try searching with a different term.</small>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      orders.forEach(order => {
+        const date = new Date(order.createdAt).toLocaleDateString('en-GH', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        });
+        const statusClass = order.status.replace('_', '-');
+        const statusDisplay = order.status.replace('_', ' ').toUpperCase();
+
+        html += `
+          <div class="track-order-item">
+            <div class="order-info">
+              <span class="order-plan">${order.package_size} · ${order.network.toUpperCase()}</span>
+              <span class="order-detail">📞 ${order.beneficiary} · ${date}</span>
+              <span class="order-detail" style="font-size:0.7rem;color:#adb5bd;">ID: ${order._id}</span>
+            </div>
+            <span class="order-status status-${order.status}">${statusDisplay}</span>
+          </div>
+        `;
+      });
+      trackResult.innerHTML = html;
+    }
+
+    // ================================================================
+    // 2. SINGLE ORDER FROM URL (existing functionality)
+    // ================================================================
+    const orderContainer = document.getElementById('orderContainer');
+
+    (async function loadOrderFromURL() {
       const urlParams = new URLSearchParams(window.location.search);
       const orderId = urlParams.get('orderId');
 
       if (!orderId) {
-        container.innerHTML = `
-          <p class="error-msg">No order ID provided.</p>
+        orderContainer.innerHTML = `
+          <p style="text-align:center;color:#6c757d;">No order ID provided.</p>
           <a href="index.html" class="back-link">Go back to home</a>
         `;
         return;
@@ -49,21 +386,20 @@
 
       async function fetchOrderStatus() {
         try {
-          const token = localStorage.getItem('token');
+          const token = localStorage.getItem('token') || null;
           const headers = {};
-          if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-          }
+          if (token) headers['Authorization'] = `Bearer ${token}`;
 
           const response = await fetch(`${API_BASE}/orders/${orderId}`, { headers });
 
           if (!response.ok) {
             if (response.status === 404) {
-              container.innerHTML = `
-                <p class="error-msg">Order not found.</p>
+              orderContainer.innerHTML = `
+                <p class="error-msg" style="color:#dc3545;text-align:center;">Order not found.</p>
                 <a href="index.html" class="back-link">Go back to home</a>
               `;
               clearInterval(refreshInterval);
+              refreshInterval = null;
               return;
             }
             throw new Error(`Failed to fetch order: ${response.status}`);
@@ -78,8 +414,8 @@
           }
         } catch (error) {
           console.error('Error fetching order status:', error);
-          container.innerHTML = `
-            <p class="error-msg">Could not load order status. Please try again.</p>
+          orderContainer.innerHTML = `
+            <p style="color:#dc3545;text-align:center;">Could not load order status. Please try again.</p>
             <button class="refresh-btn" onclick="location.reload()">Refresh</button>
             <a href="index.html" class="back-link">Go back to home</a>
           `;
@@ -94,6 +430,7 @@
         const statusDisplay = order.status.replace(/_/g, ' ').toUpperCase();
 
         let html = `
+          <h2>📊 Order Details</h2>
           <div class="order-detail"><span class="label">Order ID</span><span class="value">${order._id}</span></div>
           <div class="order-detail"><span class="label">Date</span><span class="value">${date}</span></div>
           <div class="order-detail"><span class="label">Network</span><span class="value">${order.network.toUpperCase()}</span></div>
@@ -107,14 +444,18 @@
           <div style="text-align:center; margin-top: 0.5rem;">
             <button class="refresh-btn" onclick="location.reload()">↻ Refresh Now</button>
           </div>
-          <div class="auto-refresh">${refreshInterval ? 'Auto-refreshing every 10 seconds...' : 'No further updates expected.'}</div>
+          <div class="auto-refresh">
+            ${refreshInterval ? 'Auto-refreshing every 10 seconds...' : 'No further updates expected.'}
+          </div>
           <a href="dashboard.html" class="back-link">Go to Dashboard</a>
         `;
 
-        container.innerHTML = html;
+        orderContainer.innerHTML = html;
       }
 
-      fetchOrderStatus();
+      // Initial fetch
+      await fetchOrderStatus();
+      // Set up auto-refresh (every 10 seconds)
       refreshInterval = setInterval(() => {
         if (refreshInterval) fetchOrderStatus();
       }, 10000);
