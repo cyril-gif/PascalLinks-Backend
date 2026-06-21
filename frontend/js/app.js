@@ -1,15 +1,19 @@
 /**
- * app.js – Premium Landing Page (with retry)
+ * app.js – Premium Landing Page (Multi‑Network)
  * ------------------------------------------------
- * Loads MTN plans, handles selection, phone validation,
- * and Paystack payment. Includes a retry button.
+ * Loads plans for selected network (MTN, AirtelTigo, Telecel),
+ * handles dropdown selection, phone validation, and Paystack payment.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 App started v2');
+  console.log('🚀 App started');
 
+  // DOM elements
+  const networkTabs = document.querySelectorAll('.network-tab');
+  const networkLabel = document.getElementById('networkLabel');
   const planDropdown = document.getElementById('planDropdown');
   const phoneInput = document.getElementById('phone');
+  const summaryNetwork = document.getElementById('summaryNetwork');
   const summaryPlan = document.getElementById('summaryPlan');
   const summaryPhone = document.getElementById('summaryPhone');
   const summaryPrice = document.getElementById('summaryPrice');
@@ -17,48 +21,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderPlaceholder = document.getElementById('orderPlaceholder');
   const buyNowBtn = document.getElementById('buyNowBtn');
 
+  // State
+  let currentNetwork = 'mtn';
   let selectedPlan = null;
 
-  // ----- Add a retry button dynamically -----
-  const retryBtn = document.createElement('button');
-  retryBtn.textContent = '🔄 Retry Loading Plans';
-  retryBtn.className = 'btn-primary';
-  retryBtn.style.margin = '1rem auto';
-  retryBtn.style.display = 'none'; // hidden by default
-  retryBtn.style.fontSize = '0.8rem';
-  retryBtn.style.padding = '0.4rem 1.2rem';
-  // Insert after the dropdown
-  planDropdown.parentNode.insertBefore(retryBtn, planDropdown.nextSibling);
-
-  // ----- Format helper -----
+  // Helper
   const formatPrice = (price) => price.toFixed(2);
 
-  // ----- Load plans (with retry) -----
-  async function loadPlans(showRetry = false) {
-    console.log('📡 Loading plans...');
+  // ----- Load plans for a network -----
+  async function loadPlans(network) {
+    console.log(`📡 Loading plans for ${network}...`);
     try {
-      const data = await window.api.fetchPlans('mtn');
-      console.log('✅ Plans fetched:', data);
+      const data = await window.api.fetchPlans(network);
+      console.log(`✅ Plans fetched for ${network}:`, data);
       if (data && data.length > 0) {
         populateDropdown(data);
-        retryBtn.style.display = 'none';
-        return;
-      }
-      // If data is empty, fallback to mock
-      console.warn('⚠️ No plans from API, using mock data');
-      useMockPlans();
-      retryBtn.style.display = 'none';
-    } catch (error) {
-      console.error('❌ API error:', error);
-      useMockPlans();
-      if (showRetry) {
-        retryBtn.style.display = 'block';
+        // Update network label
+        const networkNames = {
+          mtn: 'MTN',
+          airtel_tigo: 'AirtelTigo',
+          telecel: 'Telecel',
+          bigtime: 'Bigtime'
+        };
+        networkLabel.textContent = networkNames[network] + ' packages';
       } else {
-        // First attempt – show retry after a delay
-        setTimeout(() => {
-          retryBtn.style.display = 'block';
-        }, 2000);
+        console.warn(`⚠️ No plans for ${network}, using mock data`);
+        useMockPlans(network);
       }
+    } catch (error) {
+      console.error(`❌ Error loading plans for ${network}:`, error);
+      useMockPlans(network);
     }
   }
 
@@ -71,46 +63,56 @@ document.addEventListener('DOMContentLoaded', () => {
       option.textContent = `${plan.name || plan.package_size} - GHS ${formatPrice(plan.price)}`;
       planDropdown.appendChild(option);
     });
-    console.log('✅ Dropdown populated with', plans.length, 'plans');
-    // Remove old listener and attach fresh one
-    planDropdown.removeEventListener('change', onPlanChange);
-    planDropdown.addEventListener('change', onPlanChange);
-    // Trigger a change to reset state
-    planDropdown.dispatchEvent(new Event('change'));
+    // Reset selected plan
+    selectedPlan = null;
+    orderSummary.classList.add('hidden');
+    orderPlaceholder.style.display = 'block';
   }
 
-  // ----- Mock plans (from your screenshot) -----
-  function useMockPlans() {
-    const mockPlans = [
-      { package_size: '1GB', price: 3.80, name: '1GB' },
-      { package_size: '2GB', price: 7.60, name: '2GB' },
-      { package_size: '3GB', price: 11.40, name: '3GB' },
-      { package_size: '4GB', price: 15.20, name: '4GB' },
-      { package_size: '5GB', price: 19.00, name: '5GB' },
-      { package_size: '6GB', price: 22.80, name: '6GB' },
-      { package_size: '7GB', price: 26.60, name: '7GB' },
-      { package_size: '8GB', price: 30.40, name: '8GB' },
-      { package_size: '9GB', price: 34.20, name: '9GB' },
-      { package_size: '10GB', price: 38.00, name: '10GB' },
-      { package_size: '11GB', price: 41.80, name: '11GB' },
-      { package_size: '12GB', price: 45.60, name: '12GB' },
-      { package_size: '14GB', price: 53.20, name: '14GB' },
-      { package_size: '15GB', price: 57.00, name: '15GB' },
-      { package_size: '18GB', price: 68.40, name: '18GB' },
-      { package_size: '20GB', price: 75.00, name: '20GB' },
-      { package_size: '25GB', price: 94.00, name: '25GB' },
-      { package_size: '30GB', price: 113.00, name: '30GB' },
-      { package_size: '40GB', price: 145.00, name: '40GB' },
-      { package_size: '50GB', price: 180.00, name: '50GB' },
-    ];
-    console.log('📦 Using mock plans:', mockPlans.length);
-    populateDropdown(mockPlans);
+  // ----- Mock plans (fallback) -----
+  function useMockPlans(network) {
+    const mockData = {
+      mtn: [
+        { package_size: '1GB', price: 4.00, name: '1GB' },
+        { package_size: '2GB', price: 8.00, name: '2GB' },
+        { package_size: '5GB', price: 20.00, name: '5GB' },
+        { package_size: '10GB', price: 39.00, name: '10GB' },
+      ],
+      airtel_tigo: [
+        { package_size: '1GB', price: 3.95, name: '1GB' },
+        { package_size: '2GB', price: 8.35, name: '2GB' },
+        { package_size: '5GB', price: 19.50, name: '5GB' },
+        { package_size: '10GB', price: 38.50, name: '10GB' },
+      ],
+      telecel: [
+        { package_size: '5GB', price: 19.50, name: '5GB' },
+        { package_size: '10GB', price: 36.50, name: '10GB' },
+        { package_size: '20GB', price: 69.80, name: '20GB' },
+      ],
+      bigtime: [
+        { package_size: '1GB', price: 4.00, name: '1GB' },
+        { package_size: '5GB', price: 20.00, name: '5GB' },
+      ],
+    };
+    const plans = mockData[network] || mockData.mtn;
+    populateDropdown(plans);
+    const names = { mtn: 'MTN', airtel_tigo: 'AirtelTigo', telecel: 'Telecel', bigtime: 'Bigtime' };
+    networkLabel.textContent = names[network] + ' packages (mock)';
   }
+
+  // ----- Network tab switching -----
+  networkTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      networkTabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      currentNetwork = this.dataset.network;
+      loadPlans(currentNetwork);
+    });
+  });
 
   // ----- Plan change handler -----
-  function onPlanChange() {
-    const value = planDropdown.value;
-    console.log('🔄 Dropdown changed, value:', value);
+  planDropdown.addEventListener('change', function() {
+    const value = this.value;
     if (!value) {
       selectedPlan = null;
       orderSummary.classList.add('hidden');
@@ -127,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
     }
-  }
+  });
 
   // ----- Phone input -----
   phoneInput.addEventListener('input', updateSummary);
@@ -140,22 +142,13 @@ document.addEventListener('DOMContentLoaded', () => {
       orderPlaceholder.style.display = 'block';
       return;
     }
+    summaryNetwork.textContent = currentNetwork.toUpperCase().replace('_', ' ');
     summaryPlan.textContent = selectedPlan.name || selectedPlan.package_size;
     summaryPhone.textContent = phone;
     summaryPrice.textContent = `GHS ${formatPrice(selectedPlan.price)}`;
     orderSummary.classList.remove('hidden');
     orderPlaceholder.style.display = 'none';
   }
-
-  // ----- Retry button -----
-  retryBtn.addEventListener('click', async () => {
-    retryBtn.textContent = '⏳ Loading...';
-    retryBtn.disabled = true;
-    await loadPlans(true);
-    retryBtn.textContent = '🔄 Retry Loading Plans';
-    retryBtn.disabled = false;
-    retryBtn.style.display = 'none';
-  });
 
   // ----- Buy Now -----
   buyNowBtn.addEventListener('click', async () => {
@@ -174,10 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const orderData = {
-        network: 'mtn',
+        network: currentNetwork,
         package_size: selectedPlan.package_size,
         beneficiary: phone,
       };
+      console.log('📦 Order data:', orderData);
+
       const token = localStorage.getItem('token') || null;
       const response = await window.api.initiateOrder(orderData, token);
       const { orderId, transactionRef, amount, paystackKey } = response;
@@ -206,6 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ----- Initial load (with retry) -----
-  loadPlans(false);
+  // ----- Initial load -----
+  loadPlans('mtn');
 });
