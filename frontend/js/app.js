@@ -1,9 +1,9 @@
 /**
- * app.js – Premium Landing Page (Multi‑Network + Tracking)
+ * app.js – Premium Landing Page (Multi‑Provider)
  * ------------------------------------------------
- * Loads plans for selected network (MTN, AirtelTigo, Telecel),
- * handles dropdown selection, phone validation, Paystack payment,
- * and order tracking functionality.
+ * Loads plans for selected network + provider,
+ * handles dropdown selection, phone validation,
+ * Paystack payment, and order tracking.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const planDropdown = document.getElementById('planDropdown');
   const phoneInput = document.getElementById('phone');
   const summaryNetwork = document.getElementById('summaryNetwork');
+  const summaryProvider = document.getElementById('summaryProvider');
   const summaryPlan = document.getElementById('summaryPlan');
   const summaryPhone = document.getElementById('summaryPhone');
   const summaryPrice = document.getElementById('summaryPrice');
@@ -24,33 +25,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ----- State -----
   let currentNetwork = 'mtn';
+  let currentProvider = 'datamart';
   let selectedPlan = null;
 
   // Helper
   const formatPrice = (price) => price.toFixed(2);
 
-  // ----- Load plans for a network -----
-  async function loadPlans(network) {
-    console.log(`📡 Loading plans for ${network}...`);
+  // ----- Load plans for network + provider -----
+  async function loadPlans(network, provider) {
+    console.log(`📡 Loading plans for ${network} (${provider})...`);
     try {
-      const data = await window.api.fetchPlans(network);
-      console.log(`✅ Plans fetched for ${network}:`, data);
+      const data = await window.api.fetchPlans(network, provider);
+      console.log(`✅ Plans fetched:`, data);
       if (data && data.length > 0) {
         populateDropdown(data);
-        const networkNames = {
-          mtn: 'MTN',
-          airtel_tigo: 'AirtelTigo',
-          telecel: 'Telecel',
-          bigtime: 'Bigtime'
+        const labelMap = {
+          'mtn_datamart': 'MTN (DataMart)',
+          'mtn_gigsgrid': 'MTN (Gigsgrid)',
+          'airtel_tigo_datamart': 'AirtelTigo',
+          'telecel_datamart': 'Telecel'
         };
-        networkLabel.textContent = networkNames[network] + ' packages';
+        const key = `${network}_${provider}`;
+        networkLabel.textContent = labelMap[key] || `${network} (${provider}) packages`;
       } else {
-        console.warn(`⚠️ No plans for ${network}, using mock data`);
-        useMockPlans(network);
+        console.warn('⚠️ No plans, using mock data');
+        useMockPlans(network, provider);
       }
     } catch (error) {
-      console.error(`❌ Error loading plans for ${network}:`, error);
-      useMockPlans(network);
+      console.error('❌ Error loading plans:', error);
+      useMockPlans(network, provider);
     }
   }
 
@@ -69,34 +72,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ----- Mock plans (fallback) -----
-  function useMockPlans(network) {
+  function useMockPlans(network, provider) {
     const mockData = {
-      mtn: [
-        { package_size: '1GB', price: 4.00, name: '1GB' },
-        { package_size: '2GB', price: 8.00, name: '2GB' },
-        { package_size: '5GB', price: 20.00, name: '5GB' },
-        { package_size: '10GB', price: 39.00, name: '10GB' },
+      'mtn_datamart': [
+        { package_size: '1GB', price: 4.60, name: '1GB' },
+        { package_size: '2GB', price: 9.20, name: '2GB' },
+        { package_size: '5GB', price: 23.00, name: '5GB' },
+        { package_size: '10GB', price: 45.00, name: '10GB' },
       ],
-      airtel_tigo: [
-        { package_size: '1GB', price: 3.95, name: '1GB' },
-        { package_size: '2GB', price: 8.35, name: '2GB' },
-        { package_size: '5GB', price: 19.50, name: '5GB' },
-        { package_size: '10GB', price: 38.50, name: '10GB' },
+      'mtn_gigsgrid': [
+        { package_size: '1GB', price: 4.60, name: '1GB' },
+        { package_size: '2GB', price: 9.20, name: '2GB' },
+        { package_size: '5GB', price: 23.00, name: '5GB' },
+        { package_size: '10GB', price: 45.00, name: '10GB' },
       ],
-      telecel: [
-        { package_size: '5GB', price: 19.50, name: '5GB' },
-        { package_size: '10GB', price: 36.50, name: '10GB' },
-        { package_size: '20GB', price: 69.80, name: '20GB' },
+      'airtel_tigo_datamart': [
+        { package_size: '1GB', price: 4.50, name: '1GB' },
+        { package_size: '2GB', price: 8.90, name: '2GB' },
+        { package_size: '5GB', price: 22.00, name: '5GB' },
       ],
-      bigtime: [
-        { package_size: '1GB', price: 4.00, name: '1GB' },
-        { package_size: '5GB', price: 20.00, name: '5GB' },
-      ],
+      'telecel_datamart': [
+        { package_size: '5GB', price: 22.00, name: '5GB' },
+        { package_size: '10GB', price: 42.00, name: '10GB' },
+        { package_size: '20GB', price: 80.00, name: '20GB' },
+      ]
     };
-    const plans = mockData[network] || mockData.mtn;
+    const key = `${network}_${provider}`;
+    const plans = mockData[key] || mockData['mtn_datamart'];
     populateDropdown(plans);
-    const names = { mtn: 'MTN', airtel_tigo: 'AirtelTigo', telecel: 'Telecel', bigtime: 'Bigtime' };
-    networkLabel.textContent = names[network] + ' packages (mock)';
+    networkLabel.textContent = `${network} (${provider}) packages (mock)`;
   }
 
   // ----- Network tab switching -----
@@ -105,7 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
       networkTabs.forEach(t => t.classList.remove('active'));
       this.classList.add('active');
       currentNetwork = this.dataset.network;
-      loadPlans(currentNetwork);
+      currentProvider = this.dataset.provider;
+      loadPlans(currentNetwork, currentProvider);
     });
   });
 
@@ -123,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('✅ Selected plan:', selectedPlan);
       updateSummary();
     } catch (e) {
-      console.error('❌ Error parsing plan JSON:', e);
+      console.error('❌ Error parsing plan:', e);
       selectedPlan = null;
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
@@ -136,12 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----- Update summary -----
   function updateSummary() {
     const phone = phoneInput.value.trim();
-    if (!selectedPlan || !phone || !/^0[2357]\d{8}$/.test(phone)) {
+    if (!selectedPlan || !phone || !/^0\d{9}$/.test(phone)) {
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
       return;
     }
     summaryNetwork.textContent = currentNetwork.toUpperCase().replace('_', ' ');
+    summaryProvider.textContent = currentProvider === 'datamart' ? 'DataMart' : 'Gigsgrid';
     summaryPlan.textContent = selectedPlan.name || selectedPlan.package_size;
     summaryPhone.textContent = phone;
     summaryPrice.textContent = `GHS ${formatPrice(selectedPlan.price)}`;
@@ -156,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     const phone = phoneInput.value.trim();
-    if (!phone || !/^0[2357]\d{8}$/.test(phone)) {
+    if (!phone || !/^0\d{9}$/.test(phone)) {
       alert('Please enter a valid Ghana phone number (e.g., 0241234567).');
       return;
     }
@@ -169,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         network: currentNetwork,
         package_size: selectedPlan.package_size,
         beneficiary: phone,
+        provider: currentProvider,   // send provider
       };
       console.log('📦 Order data:', orderData);
 
@@ -206,23 +213,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const trackLabel = document.getElementById('trackLabel');
   const trackBtn = document.getElementById('trackBtn');
   const trackResult = document.getElementById('trackResult');
-
   let searchType = 'phone';
 
-  // Tab switching
   trackTabs.forEach(tab => {
     tab.addEventListener('click', function() {
       trackTabs.forEach(t => t.classList.remove('active'));
       this.classList.add('active');
       searchType = this.dataset.search;
-
       const labels = {
         phone: 'Enter phone number (e.g., 0241234567)',
         reference: 'Enter order reference (e.g., PAY-123456)',
-        orderId: 'Enter order ID (e.g., 67a1b2c3d4e5f6g7h8i9j0k1)'
+        orderId: 'Enter order ID'
       };
       trackLabel.textContent = labels[searchType];
-
       const placeholders = {
         phone: 'e.g., 0241234567',
         reference: 'e.g., PAY-123456',
@@ -234,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Track button
   trackBtn.addEventListener('click', trackOrder);
   trackInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') trackOrder();
@@ -246,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Please enter a value to search.');
       return;
     }
-
     trackBtn.disabled = true;
     trackBtn.textContent = 'Searching...';
 
@@ -265,17 +266,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const response = await fetch(url, { headers });
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(`Server returned ${response.status}: ${text.substring(0, 100)}...`);
+      }
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || 'Order not found');
       }
 
-      displayTrackResult(data);
+      const orders = Array.isArray(data) ? data : [data];
+      displayTrackResults(orders);
     } catch (error) {
       trackResult.classList.remove('hidden');
       trackResult.innerHTML = `
-        <div class="no-orders">
+        <div class="error-msg">
           <p>❌ ${error.message}</p>
           <small>Please try again with a different search term.</small>
         </div>
@@ -286,14 +292,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function displayTrackResult(data) {
+  function displayTrackResults(orders) {
     trackResult.classList.remove('hidden');
-
-    if (data._id) {
-      data = [data];
-    }
-
-    if (!data || data.length === 0) {
+    if (orders.length === 0) {
       trackResult.innerHTML = `
         <div class="no-orders">
           <p>🔍 No orders found</p>
@@ -304,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let html = '';
-    data.forEach(order => {
+    orders.forEach(order => {
       const date = new Date(order.createdAt).toLocaleDateString('en-GH', {
         day: '2-digit', month: 'short', year: 'numeric'
       });
@@ -314,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `
         <div class="track-order-item">
           <div class="order-info">
-            <span class="order-plan">${order.package_size} · ${order.network.toUpperCase()}</span>
+            <span class="order-plan">${order.package_size} · ${order.network.toUpperCase()} (${order.provider || '?'})</span>
             <span class="order-detail">📞 ${order.beneficiary} · ${date}</span>
             <span class="order-detail" style="font-size:0.7rem;color:#adb5bd;">ID: ${order._id}</span>
           </div>
@@ -322,10 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     });
-
     trackResult.innerHTML = html;
   }
 
   // ----- Initial load -----
-  loadPlans('mtn');
+  loadPlans('mtn', 'datamart');
 });
