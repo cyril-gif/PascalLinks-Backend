@@ -42,8 +42,8 @@
           <div class="phone-screen">
             <div class="phone-header">📶 Networks</div>
             <div class="phone-plans">
-              <div class="phone-plan">MTN(D) · 1GB</div>
-              <div class="phone-plan active">MTN(G) · 1GB</div>
+              <div class="phone-plan">MTN (DM) · 1GB</div>
+              <div class="phone-plan active">MTN (GG) · 1GB</div>
               <div class="phone-plan">AirtelTigo · 1GB</div>
               <div class="phone-plan">Telecel · 5GB</div>
             </div>
@@ -54,27 +54,32 @@
     </div>
   </section>
 
-  <!-- ===== NETWORK TABS – with provider 
-<!-- ===== NETWORK TABS – with provider attribute ===== -->
-<section class="network-section">
-  <div class="container">
-    <div class="network-tabs">
-      <button class="network-tab active" data-network="mtn" data-provider="datamart">📶 MTN (DM)</button>
-      <button class="network-tab" data-network="mtn" data-provider="gigsgrid">📶 MTN (GG)</button>
-      <button class="network-tab" data-network="airtel_tigo" data-provider="datamart">📶 AirtelTigo</button>
-      <button class="network-tab" data-network="telecel" data-provider="datamart">📶 Telecel</button>
+  <!-- ===== NETWORK TABS ===== -->
+  <section class="network-section">
+    <div class="container">
+      <div class="network-tabs">
+        <button class="network-tab active" data-network="mtn" data-provider="datamart">📶 MTN (DM)</button>
+        <button class="network-tab" data-network="mtn" data-provider="gigsgrid">📶 MTN (GG)</button>
+        <button class="network-tab" data-network="airtel_tigo" data-provider="datamart">📶 AirtelTigo</button>
+        <button class="network-tab" data-network="telecel" data-provider="datamart">📶 Telecel</button>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+
   <!-- ===== PURCHASE FLOW ===== -->
   <section class="purchase-section" id="purchase">
     <div class="container">
       <div class="section-header">
         <h2>Choose Your <span>Plan</span></h2>
-        <p id="networkLabel">MTN</p>
+        <p id="networkLabel">MTN packages</p>
       </div>
 
       <div class="order-card">
+        <div class="order-card-header">
+          <h3>📋 Order Summary</h3>
+          <span class="step-indicator">Step 2 of 3</span>
+        </div>
+
         <div class="form-group">
           <label for="planDropdown">📦 Select Package</label>
           <select id="planDropdown" class="plan-dropdown">
@@ -82,11 +87,19 @@
           </select>
         </div>
 
+        <!-- Name field -->
+        <div class="form-group">
+          <label for="customerName">👤 Full Name</label>
+          <input type="text" id="customerName" placeholder="e.g., John Doe" required>
+        </div>
+
+        <!-- Phone field -->
         <div class="form-group">
           <label for="phone">📞 Phone Number</label>
           <input type="tel" id="phone" placeholder="024 123 4567" required>
         </div>
 
+        <!-- Order summary -->
         <div id="orderSummary" class="order-summary hidden">
           <div class="summary-row">
             <span>Network</span>
@@ -101,7 +114,11 @@
             <span id="summaryPlan">—</span>
           </div>
           <div class="summary-row">
-            <span>Beneficiary</span>
+            <span>Name</span>
+            <span id="summaryName">—</span>
+          </div>
+          <div class="summary-row">
+            <span>Phone</span>
             <span id="summaryPhone">—</span>
           </div>
           <div class="summary-row total">
@@ -193,8 +210,8 @@
         <div class="step-card">
           <div class="step-number">2</div>
           <div class="step-icon">📞</div>
-          <h4>Enter Phone</h4>
-          <p>Your Ghana number</p>
+          <h4>Enter Name &amp; Phone</h4>
+          <p>Your details for delivery</p>
         </div>
         <div class="step-card">
           <div class="step-number">3</div>
