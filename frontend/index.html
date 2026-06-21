@@ -42,8 +42,9 @@
           <div class="phone-screen">
             <div class="phone-header">📶 Networks</div>
             <div class="phone-plans">
-              <div class="phone-plan">MTN · 1GB</div>
-              <div class="phone-plan active">AirtelTigo · 1GB</div>
+              <div class="phone-plan">MTN (DM) · 1GB</div>
+              <div class="phone-plan active">MTN (GG) · 1GB</div>
+              <div class="phone-plan">AirtelTigo · 1GB</div>
               <div class="phone-plan">Telecel · 5GB</div>
             </div>
             <div class="phone-footer">⚡ Instant Delivery</div>
@@ -53,13 +54,14 @@
     </div>
   </section>
 
-  <!-- ===== NETWORK TABS ===== -->
+  <!-- ===== NETWORK TABS – with provider attribute ===== -->
   <section class="network-section">
     <div class="container">
       <div class="network-tabs">
-        <button class="network-tab active" data-network="mtn">📶 MTN</button>
-        <button class="network-tab" data-network="airtel_tigo">📶 AirtelTigo</button>
-        <button class="network-tab" data-network="telecel">📶 Telecel</button>
+        <button class="network-tab active" data-network="mtn" data-provider="datamart">📶 MTN (DM)</button>
+        <button class="network-tab" data-network="mtn" data-provider="gigsgrid">📶 MTN (GG)</button>
+        <button class="network-tab" data-network="airtel_tigo" data-provider="datamart">📶 AirtelTigo</button>
+        <button class="network-tab" data-network="telecel" data-provider="datamart">📶 Telecel</button>
       </div>
     </div>
   </section>
@@ -69,7 +71,7 @@
     <div class="container">
       <div class="section-header">
         <h2>Choose Your <span>Plan</span></h2>
-        <p id="networkLabel">MTN packages</p>
+        <p id="networkLabel">MTN (DataMart) packages</p>
       </div>
 
       <div class="order-card">
@@ -89,6 +91,10 @@
           <div class="summary-row">
             <span>Network</span>
             <span id="summaryNetwork">—</span>
+          </div>
+          <div class="summary-row">
+            <span>Provider</span>
+            <span id="summaryProvider">—</span>
           </div>
           <div class="summary-row">
             <span>Plan</span>
