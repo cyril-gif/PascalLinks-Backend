@@ -23,7 +23,7 @@
     </div>
   </header>
 
-  <!-- ===== HERO – Compact ===== -->
+  <!-- ===== HERO ===== -->
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-left">
@@ -106,6 +106,66 @@
         </div>
         <div id="orderPlaceholder" class="order-placeholder">
           <p>👆 Select a plan to continue</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRACK ORDER ===== -->
+  <section class="track-section" id="track">
+    <div class="container">
+      <div class="section-header">
+        <h2>Track Your <span>Order</span></h2>
+        <p>Check the status of your data bundle delivery</p>
+      </div>
+      <div class="track-card">
+        <div class="track-tabs">
+          <button class="track-tab active" data-search="phone">📱 Phone</button>
+          <button class="track-tab" data-search="reference">🔒 Reference</button>
+          <button class="track-tab" data-search="orderId">📈 Order ID</button>
+        </div>
+        <div class="track-form">
+          <div class="form-group">
+            <label for="trackInput" id="trackLabel">Enter phone number (e.g., 0241234567)</label>
+            <div class="track-input-group">
+              <input type="text" id="trackInput" placeholder="e.g., 0241234567" />
+              <button id="trackBtn" class="btn-primary">Track Order</button>
+            </div>
+          </div>
+        </div>
+        <div id="trackResult" class="track-result hidden"></div>
+        <div class="track-guide">
+          <h4>📋 Order Status Guide</h4>
+          <div class="guide-grid">
+            <div class="guide-item">
+              <span class="guide-dot pending"></span>
+              <div>
+                <strong>Pending</strong>
+                <small>Order received, waiting to be processed</small>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-dot processing"></span>
+              <div>
+                <strong>Processing</strong>
+                <small>Your data is being sent to the network</small>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-dot completed"></span>
+              <div>
+                <strong>Delivered</strong>
+                <small>Data delivered successfully! Check your phone</small>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-dot failed"></span>
+              <div>
+                <strong>Failed</strong>
+                <small>Something went wrong - contact support</small>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
