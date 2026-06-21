@@ -1,14 +1,15 @@
 /**
- * app.js – Premium Landing Page (Multi‑Network)
+ * app.js – Premium Landing Page (Multi‑Network + Tracking)
  * ------------------------------------------------
  * Loads plans for selected network (MTN, AirtelTigo, Telecel),
- * handles dropdown selection, phone validation, and Paystack payment.
+ * handles dropdown selection, phone validation, Paystack payment,
+ * and order tracking functionality.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 App started');
 
-  // DOM elements
+  // ----- DOM elements -----
   const networkTabs = document.querySelectorAll('.network-tab');
   const networkLabel = document.getElementById('networkLabel');
   const planDropdown = document.getElementById('planDropdown');
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderPlaceholder = document.getElementById('orderPlaceholder');
   const buyNowBtn = document.getElementById('buyNowBtn');
 
-  // State
+  // ----- State -----
   let currentNetwork = 'mtn';
   let selectedPlan = null;
 
@@ -36,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(`✅ Plans fetched for ${network}:`, data);
       if (data && data.length > 0) {
         populateDropdown(data);
-        // Update network label
         const networkNames = {
           mtn: 'MTN',
           airtel_tigo: 'AirtelTigo',
@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
       option.textContent = `${plan.name || plan.package_size} - GHS ${formatPrice(plan.price)}`;
       planDropdown.appendChild(option);
     });
-    // Reset selected plan
     selectedPlan = null;
     orderSummary.classList.add('hidden');
     orderPlaceholder.style.display = 'block';
@@ -200,6 +199,132 @@ document.addEventListener('DOMContentLoaded', () => {
       buyNowBtn.textContent = 'Buy Now';
     }
   });
+
+  // ===== TRACK ORDER LOGIC =====
+  const trackTabs = document.querySelectorAll('.track-tab');
+  const trackInput = document.getElementById('trackInput');
+  const trackLabel = document.getElementById('trackLabel');
+  const trackBtn = document.getElementById('trackBtn');
+  const trackResult = document.getElementById('trackResult');
+
+  let searchType = 'phone';
+
+  // Tab switching
+  trackTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      trackTabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      searchType = this.dataset.search;
+
+      const labels = {
+        phone: 'Enter phone number (e.g., 0241234567)',
+        reference: 'Enter order reference (e.g., PAY-123456)',
+        orderId: 'Enter order ID (e.g., 67a1b2c3d4e5f6g7h8i9j0k1)'
+      };
+      trackLabel.textContent = labels[searchType];
+
+      const placeholders = {
+        phone: 'e.g., 0241234567',
+        reference: 'e.g., PAY-123456',
+        orderId: 'e.g., 67a1b2c3d4e5f6g7h8i9j0k1'
+      };
+      trackInput.placeholder = placeholders[searchType];
+      trackInput.value = '';
+      trackResult.classList.add('hidden');
+    });
+  });
+
+  // Track button
+  trackBtn.addEventListener('click', trackOrder);
+  trackInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') trackOrder();
+  });
+
+  async function trackOrder() {
+    const query = trackInput.value.trim();
+    if (!query) {
+      alert('Please enter a value to search.');
+      return;
+    }
+
+    trackBtn.disabled = true;
+    trackBtn.textContent = 'Searching...';
+
+    try {
+      let url = '';
+      if (searchType === 'phone') {
+        url = `/api/orders/by-phone?phone=${encodeURIComponent(query)}`;
+      } else if (searchType === 'reference') {
+        url = `/api/orders/by-reference?reference=${encodeURIComponent(query)}`;
+      } else if (searchType === 'orderId') {
+        url = `/api/orders/${query}`;
+      }
+
+      const token = localStorage.getItem('token') || null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const response = await fetch(url, { headers });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Order not found');
+      }
+
+      displayTrackResult(data);
+    } catch (error) {
+      trackResult.classList.remove('hidden');
+      trackResult.innerHTML = `
+        <div class="no-orders">
+          <p>❌ ${error.message}</p>
+          <small>Please try again with a different search term.</small>
+        </div>
+      `;
+    } finally {
+      trackBtn.disabled = false;
+      trackBtn.textContent = 'Track Order';
+    }
+  }
+
+  function displayTrackResult(data) {
+    trackResult.classList.remove('hidden');
+
+    if (data._id) {
+      data = [data];
+    }
+
+    if (!data || data.length === 0) {
+      trackResult.innerHTML = `
+        <div class="no-orders">
+          <p>🔍 No orders found</p>
+          <small>Try searching with a different term.</small>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    data.forEach(order => {
+      const date = new Date(order.createdAt).toLocaleDateString('en-GH', {
+        day: '2-digit', month: 'short', year: 'numeric'
+      });
+      const statusClass = order.status.replace('_', '-');
+      const statusDisplay = order.status.replace('_', ' ').toUpperCase();
+
+      html += `
+        <div class="track-order-item">
+          <div class="order-info">
+            <span class="order-plan">${order.package_size} · ${order.network.toUpperCase()}</span>
+            <span class="order-detail">📞 ${order.beneficiary} · ${date}</span>
+            <span class="order-detail" style="font-size:0.7rem;color:#adb5bd;">ID: ${order._id}</span>
+          </div>
+          <span class="order-status status-${order.status}">${statusDisplay}</span>
+        </div>
+      `;
+    });
+
+    trackResult.innerHTML = html;
+  }
 
   // ----- Initial load -----
   loadPlans('mtn');
