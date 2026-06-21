@@ -18,8 +18,6 @@
       margin: 2rem auto;
       padding: 0 1.2rem;
     }
-
-    /* ===== TRACKING CARD (same as index) ===== */
     .track-card {
       background: #fff;
       border-radius: 16px;
@@ -123,8 +121,11 @@
       color: #6c757d;
       padding: 1rem 0;
     }
-
-    /* ===== SINGLE ORDER DISPLAY ===== */
+    .error-msg {
+      color: #dc3545;
+      text-align: center;
+      padding: 1rem 0;
+    }
     .order-container {
       background: #fff;
       border-radius: 16px;
@@ -191,8 +192,6 @@
       padding: 1.5rem;
       color: var(--primary);
     }
-
-    /* status colours */
     .status-pending_payment { background: #fff3cd; color: #856404; }
     .status-processing { background: #cce5ff; color: #004085; }
     .status-completed { background: #d4edda; color: #155724; }
@@ -201,265 +200,259 @@
     .status-retrying { background: #e2e3e5; color: #383d41; }
 
     @media (max-width: 480px) {
-      .track-input-group {
-        flex-direction: column;
-      }
-      .track-input-group .btn-primary {
-        width: 100%;
-        justify-content: center;
-      }
+      .track-input-group { flex-direction: column; }
+      .track-input-group .btn-primary { width: 100%; justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-  <div class="status-page">
+<div class="status-page">
 
-    <!-- ===== TRACKING CARD ===== -->
-    <div class="track-card">
-      <div class="track-tabs">
-        <button class="track-tab active" data-search="phone">📱 Phone</button>
-        <button class="track-tab" data-search="reference">🔒 Reference</button>
-        <button class="track-tab" data-search="orderId">📈 Order ID</button>
-      </div>
-      <div class="track-form">
-        <div class="form-group" style="margin-bottom:0;">
-          <label for="trackInput" id="trackLabel" style="font-weight:600;font-size:0.85rem;">Enter phone number (e.g., 0241234567)</label>
-          <div class="track-input-group" style="margin-top:0.4rem;">
-            <input type="text" id="trackInput" placeholder="e.g., 0241234567" />
-            <button id="trackBtn" class="btn-primary">Track Order</button>
-          </div>
+  <!-- ===== TRACKING CARD ===== -->
+  <div class="track-card">
+    <div class="track-tabs">
+      <button class="track-tab active" data-search="phone">📱 Phone</button>
+      <button class="track-tab" data-search="reference">🔒 Reference</button>
+      <button class="track-tab" data-search="orderId">📈 Order ID</button>
+    </div>
+    <div class="track-form">
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="trackInput" id="trackLabel" style="font-weight:600;font-size:0.85rem;">Enter phone number (e.g., 0241234567)</label>
+        <div class="track-input-group" style="margin-top:0.4rem;">
+          <input type="text" id="trackInput" placeholder="e.g., 0241234567" />
+          <button id="trackBtn" class="btn-primary">Track Order</button>
         </div>
       </div>
-      <div id="trackResult" class="track-result hidden">
-        <!-- Results rendered here -->
-      </div>
     </div>
-
-    <!-- ===== SINGLE ORDER DISPLAY (from URL) ===== -->
-    <div id="orderContainer" class="order-container">
-      <div class="loading-spinner">Loading order details...</div>
-    </div>
-
+    <div id="trackResult" class="track-result hidden"></div>
   </div>
 
-  <script>
-    // ================================================================
-    // 1. TRACKING LOGIC (same as index)
-    // ================================================================
-    const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
+  <!-- ===== SINGLE ORDER FROM URL ===== -->
+  <div id="orderContainer" class="order-container">
+    <div class="loading-spinner">Loading order details...</div>
+  </div>
 
-    const trackTabs = document.querySelectorAll('.track-tab');
-    const trackInput = document.getElementById('trackInput');
-    const trackLabel = document.getElementById('trackLabel');
-    const trackBtn = document.getElementById('trackBtn');
-    const trackResult = document.getElementById('trackResult');
-    let searchType = 'phone';
+</div>
 
-    trackTabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        trackTabs.forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        searchType = this.dataset.search;
-        const labels = {
-          phone: 'Enter phone number (e.g., 0241234567)',
-          reference: 'Enter order reference (e.g., PAY-123456)',
-          orderId: 'Enter order ID (e.g., 67a1b2c3d4e5f6g7h8i9j0k1)'
-        };
-        trackLabel.textContent = labels[searchType];
-        const placeholders = {
-          phone: 'e.g., 0241234567',
-          reference: 'e.g., PAY-123456',
-          orderId: 'e.g., 67a1b2c3d4e5f6g7h8i9j0k1'
-        };
-        trackInput.placeholder = placeholders[searchType];
-        trackInput.value = '';
-        trackResult.classList.add('hidden');
-      });
+<script>
+  const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
+
+  // ---------- TRACKING ----------
+  const trackTabs = document.querySelectorAll('.track-tab');
+  const trackInput = document.getElementById('trackInput');
+  const trackLabel = document.getElementById('trackLabel');
+  const trackBtn = document.getElementById('trackBtn');
+  const trackResult = document.getElementById('trackResult');
+  let searchType = 'phone';
+
+  trackTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      trackTabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      searchType = this.dataset.search;
+      const labels = {
+        phone: 'Enter phone number (e.g., 0241234567)',
+        reference: 'Enter order reference (e.g., PAY-123456)',
+        orderId: 'Enter order ID (e.g., 67a1b2c3d4e5f6g7h8i9j0k1)'
+      };
+      trackLabel.textContent = labels[searchType];
+      const placeholders = {
+        phone: 'e.g., 0241234567',
+        reference: 'e.g., PAY-123456',
+        orderId: 'e.g., 67a1b2c3d4e5f6g7h8i9j0k1'
+      };
+      trackInput.placeholder = placeholders[searchType];
+      trackInput.value = '';
+      trackResult.classList.add('hidden');
     });
+  });
 
-    trackBtn.addEventListener('click', trackOrder);
-    trackInput.addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') trackOrder();
-    });
+  trackBtn.addEventListener('click', trackOrder);
+  trackInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') trackOrder();
+  });
 
-    async function trackOrder() {
-      const query = trackInput.value.trim();
-      if (!query) {
-        alert('Please enter a value to search.');
-        return;
+  async function trackOrder() {
+    const query = trackInput.value.trim();
+    if (!query) {
+      alert('Please enter a value to search.');
+      return;
+    }
+    trackBtn.disabled = true;
+    trackBtn.textContent = 'Searching...';
+
+    try {
+      let url = '';
+      if (searchType === 'phone') {
+        url = `/api/orders/by-phone?phone=${encodeURIComponent(query)}`;
+      } else if (searchType === 'reference') {
+        url = `/api/orders/by-reference?reference=${encodeURIComponent(query)}`;
+      } else if (searchType === 'orderId') {
+        url = `/api/orders/${query}`;
       }
-      trackBtn.disabled = true;
-      trackBtn.textContent = 'Searching...';
 
+      const token = localStorage.getItem('token') || null;
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const response = await fetch(url, { headers });
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        // Not JSON – likely an HTML error page
+        const text = await response.text();
+        throw new Error(`Server returned ${response.status}: ${text.substring(0, 100)}...`);
+      }
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Order not found');
+      }
+
+      const orders = Array.isArray(data) ? data : [data];
+      displayTrackResults(orders);
+
+    } catch (error) {
+      trackResult.classList.remove('hidden');
+      trackResult.innerHTML = `
+        <div class="error-msg">
+          <p>❌ ${error.message}</p>
+          <small>Please try again with a different search term.</small>
+        </div>
+      `;
+    } finally {
+      trackBtn.disabled = false;
+      trackBtn.textContent = 'Track Order';
+    }
+  }
+
+  function displayTrackResults(orders) {
+    trackResult.classList.remove('hidden');
+    if (orders.length === 0) {
+      trackResult.innerHTML = `
+        <div class="no-orders">
+          <p>🔍 No orders found</p>
+          <small>Try searching with a different term.</small>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    orders.forEach(order => {
+      const date = new Date(order.createdAt).toLocaleDateString('en-GH', {
+        day: '2-digit', month: 'short', year: 'numeric'
+      });
+      const statusClass = order.status.replace('_', '-');
+      const statusDisplay = order.status.replace('_', ' ').toUpperCase();
+
+      html += `
+        <div class="track-order-item">
+          <div class="order-info">
+            <span class="order-plan">${order.package_size} · ${order.network.toUpperCase()}</span>
+            <span class="order-detail">📞 ${order.beneficiary} · ${date}</span>
+            <span class="order-detail" style="font-size:0.7rem;color:#adb5bd;">ID: ${order._id}</span>
+          </div>
+          <span class="order-status status-${order.status}">${statusDisplay}</span>
+        </div>
+      `;
+    });
+    trackResult.innerHTML = html;
+  }
+
+  // ---------- SINGLE ORDER FROM URL ----------
+  const orderContainer = document.getElementById('orderContainer');
+
+  (async function loadOrderFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+
+    if (!orderId) {
+      orderContainer.innerHTML = `
+        <p style="text-align:center;color:#6c757d;">No order ID provided.</p>
+        <a href="index.html" class="back-link">Go back to home</a>
+      `;
+      return;
+    }
+
+    let refreshInterval = null;
+
+    async function fetchOrderStatus() {
       try {
-        let url = '';
-        if (searchType === 'phone') {
-          url = `/api/orders/by-phone?phone=${encodeURIComponent(query)}`;
-        } else if (searchType === 'reference') {
-          url = `/api/orders/by-reference?reference=${encodeURIComponent(query)}`;
-        } else if (searchType === 'orderId') {
-          url = `/api/orders/${query}`;
-        }
-
         const token = localStorage.getItem('token') || null;
         const headers = {};
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const response = await fetch(url, { headers });
-        const data = await response.json();
+        const response = await fetch(`${API_BASE}/orders/${orderId}`, { headers });
 
         if (!response.ok) {
-          throw new Error(data.error || 'Order not found');
-        }
-
-        // If single order, wrap in array
-        const orders = Array.isArray(data) ? data : [data];
-        displayTrackResults(orders);
-
-      } catch (error) {
-        trackResult.classList.remove('hidden');
-        trackResult.innerHTML = `
-          <div class="no-orders">
-            <p>❌ ${error.message}</p>
-            <small>Please try again with a different search term.</small>
-          </div>
-        `;
-      } finally {
-        trackBtn.disabled = false;
-        trackBtn.textContent = 'Track Order';
-      }
-    }
-
-    function displayTrackResults(orders) {
-      trackResult.classList.remove('hidden');
-      if (orders.length === 0) {
-        trackResult.innerHTML = `
-          <div class="no-orders">
-            <p>🔍 No orders found</p>
-            <small>Try searching with a different term.</small>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-      orders.forEach(order => {
-        const date = new Date(order.createdAt).toLocaleDateString('en-GH', {
-          day: '2-digit', month: 'short', year: 'numeric'
-        });
-        const statusClass = order.status.replace('_', '-');
-        const statusDisplay = order.status.replace('_', ' ').toUpperCase();
-
-        html += `
-          <div class="track-order-item">
-            <div class="order-info">
-              <span class="order-plan">${order.package_size} · ${order.network.toUpperCase()}</span>
-              <span class="order-detail">📞 ${order.beneficiary} · ${date}</span>
-              <span class="order-detail" style="font-size:0.7rem;color:#adb5bd;">ID: ${order._id}</span>
-            </div>
-            <span class="order-status status-${order.status}">${statusDisplay}</span>
-          </div>
-        `;
-      });
-      trackResult.innerHTML = html;
-    }
-
-    // ================================================================
-    // 2. SINGLE ORDER FROM URL (existing functionality)
-    // ================================================================
-    const orderContainer = document.getElementById('orderContainer');
-
-    (async function loadOrderFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const orderId = urlParams.get('orderId');
-
-      if (!orderId) {
-        orderContainer.innerHTML = `
-          <p style="text-align:center;color:#6c757d;">No order ID provided.</p>
-          <a href="index.html" class="back-link">Go back to home</a>
-        `;
-        return;
-      }
-
-      let refreshInterval = null;
-
-      async function fetchOrderStatus() {
-        try {
-          const token = localStorage.getItem('token') || null;
-          const headers = {};
-          if (token) headers['Authorization'] = `Bearer ${token}`;
-
-          const response = await fetch(`${API_BASE}/orders/${orderId}`, { headers });
-
-          if (!response.ok) {
-            if (response.status === 404) {
-              orderContainer.innerHTML = `
-                <p class="error-msg" style="color:#dc3545;text-align:center;">Order not found.</p>
-                <a href="index.html" class="back-link">Go back to home</a>
-              `;
-              clearInterval(refreshInterval);
-              refreshInterval = null;
-              return;
-            }
-            throw new Error(`Failed to fetch order: ${response.status}`);
-          }
-
-          const order = await response.json();
-          renderOrder(order);
-
-          if (order.status === 'completed' || order.status === 'failed' || order.status === 'payment_failed') {
+          if (response.status === 404) {
+            orderContainer.innerHTML = `
+              <p class="error-msg" style="color:#dc3545;text-align:center;">Order not found.</p>
+              <a href="index.html" class="back-link">Go back to home</a>
+            `;
             clearInterval(refreshInterval);
             refreshInterval = null;
+            return;
           }
-        } catch (error) {
-          console.error('Error fetching order status:', error);
-          orderContainer.innerHTML = `
-            <p style="color:#dc3545;text-align:center;">Could not load order status. Please try again.</p>
-            <button class="refresh-btn" onclick="location.reload()">Refresh</button>
-            <a href="index.html" class="back-link">Go back to home</a>
-          `;
+          throw new Error(`Failed to fetch order: ${response.status}`);
+        }
+
+        const order = await response.json();
+        renderOrder(order);
+
+        if (order.status === 'completed' || order.status === 'failed' || order.status === 'payment_failed') {
           clearInterval(refreshInterval);
           refreshInterval = null;
         }
-      }
-
-      function renderOrder(order) {
-        const date = new Date(order.createdAt).toLocaleString('en-GH');
-        const statusClass = `status-${order.status}`;
-        const statusDisplay = order.status.replace(/_/g, ' ').toUpperCase();
-
-        let html = `
-          <h2>📊 Order Details</h2>
-          <div class="order-detail"><span class="label">Order ID</span><span class="value">${order._id}</span></div>
-          <div class="order-detail"><span class="label">Date</span><span class="value">${date}</span></div>
-          <div class="order-detail"><span class="label">Network</span><span class="value">${order.network.toUpperCase()}</span></div>
-          <div class="order-detail"><span class="label">Plan</span><span class="value">${order.package_size}</span></div>
-          <div class="order-detail"><span class="label">Beneficiary</span><span class="value">${order.beneficiary}</span></div>
-          <div class="order-detail"><span class="label">Amount Paid</span><span class="value">GHS ${order.sellingPrice.toFixed(2)}</span></div>
-          <div style="text-align:center; margin: 1rem 0;">
-            <span class="status-badge-large ${statusClass}">${statusDisplay}</span>
-          </div>
-          ${order.errorMessage ? `<p style="color:#dc3545; text-align:center;">Error: ${order.errorMessage}</p>` : ''}
-          <div style="text-align:center; margin-top: 0.5rem;">
-            <button class="refresh-btn" onclick="location.reload()">↻ Refresh Now</button>
-          </div>
-          <div class="auto-refresh">
-            ${refreshInterval ? 'Auto-refreshing every 10 seconds...' : 'No further updates expected.'}
-          </div>
-          <a href="dashboard.html" class="back-link">Go to Dashboard</a>
+      } catch (error) {
+        console.error('Error fetching order status:', error);
+        orderContainer.innerHTML = `
+          <p style="color:#dc3545;text-align:center;">Could not load order status. Please try again.</p>
+          <button class="refresh-btn" onclick="location.reload()">Refresh</button>
+          <a href="index.html" class="back-link">Go back to home</a>
         `;
-
-        orderContainer.innerHTML = html;
+        clearInterval(refreshInterval);
+        refreshInterval = null;
       }
+    }
 
-      // Initial fetch
-      await fetchOrderStatus();
-      // Set up auto-refresh (every 10 seconds)
-      refreshInterval = setInterval(() => {
-        if (refreshInterval) fetchOrderStatus();
-      }, 10000);
-    })();
-  </script>
+    function renderOrder(order) {
+      const date = new Date(order.createdAt).toLocaleString('en-GH');
+      const statusClass = `status-${order.status}`;
+      const statusDisplay = order.status.replace(/_/g, ' ').toUpperCase();
+
+      let html = `
+        <h2>📊 Order Details</h2>
+        <div class="order-detail"><span class="label">Order ID</span><span class="value">${order._id}</span></div>
+        <div class="order-detail"><span class="label">Date</span><span class="value">${date}</span></div>
+        <div class="order-detail"><span class="label">Network</span><span class="value">${order.network.toUpperCase()}</span></div>
+        <div class="order-detail"><span class="label">Plan</span><span class="value">${order.package_size}</span></div>
+        <div class="order-detail"><span class="label">Beneficiary</span><span class="value">${order.beneficiary}</span></div>
+        <div class="order-detail"><span class="label">Amount Paid</span><span class="value">GHS ${order.sellingPrice.toFixed(2)}</span></div>
+        <div style="text-align:center; margin: 1rem 0;">
+          <span class="status-badge-large ${statusClass}">${statusDisplay}</span>
+        </div>
+        ${order.errorMessage ? `<p style="color:#dc3545; text-align:center;">Error: ${order.errorMessage}</p>` : ''}
+        <div style="text-align:center; margin-top: 0.5rem;">
+          <button class="refresh-btn" onclick="location.reload()">↻ Refresh Now</button>
+        </div>
+        <div class="auto-refresh">
+          ${refreshInterval ? 'Auto-refreshing every 10 seconds...' : 'No further updates expected.'}
+        </div>
+        <a href="dashboard.html" class="back-link">Go to Dashboard</a>
+      `;
+
+      orderContainer.innerHTML = html;
+    }
+
+    await fetchOrderStatus();
+    refreshInterval = setInterval(() => {
+      if (refreshInterval) fetchOrderStatus();
+    }, 10000);
+  })();
+</script>
 </body>
 </html>
