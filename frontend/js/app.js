@@ -2,7 +2,7 @@
  * app.js – Premium Landing Page (Multi‑Provider)
  * ------------------------------------------------
  * Loads plans for selected network + provider,
- * handles dropdown selection, phone validation,
+ * handles dropdown selection, name, phone validation,
  * Paystack payment, and order tracking.
  */
 
@@ -13,10 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const networkTabs = document.querySelectorAll('.network-tab');
   const networkLabel = document.getElementById('networkLabel');
   const planDropdown = document.getElementById('planDropdown');
+  const customerNameInput = document.getElementById('customerName');
   const phoneInput = document.getElementById('phone');
   const summaryNetwork = document.getElementById('summaryNetwork');
   const summaryProvider = document.getElementById('summaryProvider');
   const summaryPlan = document.getElementById('summaryPlan');
+  const summaryName = document.getElementById('summaryName');
   const summaryPhone = document.getElementById('summaryPhone');
   const summaryPrice = document.getElementById('summaryPrice');
   const orderSummary = document.getElementById('orderSummary');
@@ -39,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(`✅ Plans fetched:`, data);
       if (data && data.length > 0) {
         populateDropdown(data);
-        // Show only network name (no provider)
         const networkNames = {
           'mtn': 'MTN',
           'airtel_tigo': 'AirtelTigo',
@@ -135,13 +136,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ----- Name input -----
+  customerNameInput.addEventListener('input', updateSummary);
+
   // ----- Phone input -----
   phoneInput.addEventListener('input', updateSummary);
 
-  // ----- Update summary (shows provider) -----
+  // ----- Update summary (now with name) -----
   function updateSummary() {
+    const name = customerNameInput.value.trim();
     const phone = phoneInput.value.trim();
-    if (!selectedPlan || !phone || !/^0\d{9}$/.test(phone)) {
+    if (!selectedPlan || !name || !phone || !/^0\d{9}$/.test(phone)) {
       orderSummary.classList.add('hidden');
       orderPlaceholder.style.display = 'block';
       return;
@@ -149,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     summaryNetwork.textContent = currentNetwork.toUpperCase().replace('_', ' ');
     summaryProvider.textContent = currentProvider === 'datamart' ? 'DataMart' : 'Gigsgrid';
     summaryPlan.textContent = selectedPlan.name || selectedPlan.package_size;
+    summaryName.textContent = name;
     summaryPhone.textContent = phone;
     summaryPrice.textContent = `GHS ${formatPrice(selectedPlan.price)}`;
     orderSummary.classList.remove('hidden');
@@ -157,11 +163,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ----- Buy Now -----
   buyNowBtn.addEventListener('click', async () => {
+    const name = customerNameInput.value.trim();
+    const phone = phoneInput.value.trim();
+
     if (!selectedPlan) {
       alert('Please select a plan.');
       return;
     }
-    const phone = phoneInput.value.trim();
+    if (!name) {
+      alert('Please enter your full name.');
+      return;
+    }
     if (!phone || !/^0\d{9}$/.test(phone)) {
       alert('Please enter a valid Ghana phone number (e.g., 0241234567).');
       return;
@@ -175,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         network: currentNetwork,
         package_size: selectedPlan.package_size,
         beneficiary: phone,
+        customerName: name,
         provider: currentProvider,
       };
       console.log('📦 Order data:', orderData);
@@ -316,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="track-order-item">
           <div class="order-info">
             <span class="order-plan">${order.package_size} · ${order.network.toUpperCase()} (${order.provider || '?'})</span>
-            <span class="order-detail">📞 ${order.beneficiary} · ${date}</span>
+            <span class="order-detail">👤 ${order.customerName || 'N/A'} · 📞 ${order.beneficiary} · ${date}</span>
             <span class="order-detail" style="font-size:0.7rem;color:#adb5bd;">ID: ${order._id}</span>
           </div>
           <span class="order-status status-${order.status}">${statusDisplay}</span>
