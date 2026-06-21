@@ -5,27 +5,17 @@
  * All endpoints are relative to the backend base URL.
  */
 
-// Backend URL (no trailing slash)
 const API_BASE = 'https://pascallinks-frontend.onrender.com/api';
 
 /**
  * Generic fetch wrapper with error handling.
  */
 async function apiCall(endpoint, method = 'GET', body = null, token = null) {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const options = {
-    method,
-    headers,
-  };
-  if (body) {
-    options.body = JSON.stringify(body);
-  }
+  const options = { method, headers };
+  if (body) options.body = JSON.stringify(body);
 
   try {
     const response = await fetch(`${API_BASE}${endpoint}`, options);
@@ -41,32 +31,29 @@ async function apiCall(endpoint, method = 'GET', body = null, token = null) {
 }
 
 /**
- * Fetch plans for a given network.
+ * Fetch plans for a given network and provider.
+ * @param {string} network - e.g., 'mtn', 'telecel'
+ * @param {string} provider - 'datamart' or 'gigsgrid'
  */
-async function fetchPlans(network) {
-  return apiCall(`/plans/${network}`);
+async function fetchPlans(network, provider = 'datamart') {
+  return apiCall(`/plans/${network}?provider=${provider}`);
 }
 
 /**
- * Initiate an order (payment).
- * @param {object} orderData - { network, package_size, beneficiary }
- * @param {string|null} token - JWT token (if user is logged in)
+ * Initiate an order.
+ * @param {object} orderData - { network, package_size, beneficiary, provider }
+ * @param {string|null} token - JWT token (if logged in)
  */
 async function initiateOrder(orderData, token = null) {
   return apiCall('/orders/initiate', 'POST', orderData, token);
 }
 
 /**
- * Confirm payment (called by Paystack redirect/webhook).
+ * Confirm payment.
  */
 async function confirmPayment(reference) {
   return apiCall('/orders/confirm', 'POST', { reference });
 }
 
 // Expose globally
-window.api = {
-  API_BASE,
-  fetchPlans,
-  initiateOrder,
-  confirmPayment
-};
+window.api = { API_BASE, fetchPlans, initiateOrder, confirmPayment };
