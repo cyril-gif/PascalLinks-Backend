@@ -10,7 +10,11 @@
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* ===== CUSTOM BUTTONS ===== */
+    /* =============================================
+       CUSTOM STYLES (including mobile optimizations)
+       ============================================= */
+
+    /* ---- Buttons ---- */
     .btn-store {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #fff !important;
@@ -38,7 +42,7 @@
       box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
     }
 
-    /* ===== SERVICES SECTION ===== */
+    /* ---- Services ---- */
     .services-section {
       padding: 3rem 0;
       background: #fff;
@@ -85,7 +89,7 @@
       text-decoration: underline;
     }
 
-    /* ===== TRUST / FEATURES ===== */
+    /* ---- Trust ---- */
     .trust-section {
       padding: 2.5rem 0;
       background: var(--bg-light);
@@ -113,7 +117,7 @@
       color: #6c757d;
     }
 
-    /* ===== CATEGORIES (Store) ===== */
+    /* ---- Categories ---- */
     .categories-section {
       padding: 2rem 0;
       background: #fff;
@@ -141,14 +145,163 @@
       color: var(--primary);
     }
 
-    @media (max-width: 600px) {
-      .services-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-      }
-      .trust-grid {
-        grid-template-columns: 1fr 1fr;
-      }
+    /* ---- Promo sections ---- */
+    .promo-section {
+      padding: 2.5rem 0;
+    }
+    .promo-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      max-width: 900px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .promo-content {
+      flex: 1;
+    }
+    .promo-badge {
+      display: inline-block;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .promo-badge.store {
+      background: #764ba2;
+      color: #fff;
+    }
+    .promo-badge.boost {
+      background: #f5576c;
+      color: #fff;
+    }
+    .promo-content h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 0.3rem 0;
+    }
+    .promo-content h2 .store-color {
+      color: #764ba2;
+    }
+    .promo-content h2 .boost-color {
+      color: #f5576c;
+    }
+    .promo-content p {
+      color: #6c757d;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    .promo-icons {
+      display: flex;
+      gap: 1rem;
+      font-size: 2.8rem;
+      opacity: 0.8;
+    }
+    .promo-section.store-bg {
+      background: linear-gradient(135deg, #e8ecf9 0%, #d5d8f0 100%);
+    }
+    .promo-section.boost-bg {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    /* =============================================
+       MOBILE OPTIMIZATIONS
+       ============================================= */
+    @media (max-width: 480px) {
+      .site-header .logo { font-size: 1.1rem; }
+      .nav-links { gap: 0.3rem; }
+      .nav-links .nav-link { font-size: 0.7rem; padding: 0.2rem 0.5rem; }
+      .btn-outline, .btn-store, .btn-boost { padding: 0.2rem 0.6rem; font-size: 0.65rem; }
+
+      .hero { padding: 1.2rem 0 1rem; }
+      .hero-left h1 { font-size: 1.6rem; }
+      .tagline { font-size: 0.8rem; }
+      .hero-trust { gap: 0.6rem; font-size: 0.65rem; flex-wrap: wrap; justify-content: center; }
+      .btn-primary { padding: 0.4rem 1.2rem; font-size: 0.8rem; }
+      .phone-mockup { width: 130px; padding: 0.4rem; }
+      .phone-plan { font-size: 0.55rem; }
+
+      .network-tab { font-size: 0.65rem; padding: 0.25rem 0.8rem; min-height: 40px; }
+
+      .services-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+      .service-card { padding: 0.8rem 0.5rem; }
+      .service-card .icon { font-size: 1.8rem; }
+      .service-card h4 { font-size: 0.9rem; }
+      .service-card p { font-size: 0.7rem; }
+      .service-card .btn-link { font-size: 0.75rem; }
+
+      .trust-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+      .trust-item .icon { font-size: 1.5rem; }
+      .trust-item h5 { font-size: 0.8rem; }
+      .trust-item p { font-size: 0.65rem; }
+
+      .categories-grid { gap: 0.5rem 0.8rem; }
+      .category-tag { font-size: 0.7rem; padding: 0.2rem 0.8rem; }
+
+      .order-card { padding: 0.8rem; }
+      .order-card-header h3 { font-size: 1rem; }
+      .order-card-header .step-indicator { font-size: 0.6rem; padding: 0.1rem 0.6rem; }
+      .plan-dropdown { font-size: 0.8rem; padding: 0.5rem 0.8rem; }
+      .form-group label { font-size: 0.75rem; }
+      .form-group input { font-size: 0.8rem; padding: 0.5rem 0.8rem; }
+      .summary-row { font-size: 0.8rem; }
+      .summary-row.total { font-size: 0.95rem; }
+      .btn-large { padding: 0.6rem; font-size: 0.9rem; }
+
+      .track-card { padding: 1rem; }
+      .track-tab { font-size: 0.65rem; padding: 0.2rem 0.8rem; }
+      .track-input-group input { font-size: 0.8rem; padding: 0.5rem 0.8rem; }
+      .track-input-group .btn-primary { font-size: 0.8rem; padding: 0.5rem 1rem; }
+      .track-order-item { padding: 0.6rem; }
+      .track-order-item .order-plan { font-size: 0.8rem; }
+      .track-order-item .order-detail { font-size: 0.7rem; }
+      .track-order-item .order-status { font-size: 0.6rem; padding: 0.1rem 0.5rem; }
+      .guide-item { font-size: 0.7rem; }
+      .guide-item strong { font-size: 0.7rem; }
+      .guide-item small { font-size: 0.6rem; }
+
+      .steps-grid { grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+      .step-card { padding: 0.5rem 0.3rem; }
+      .step-number { width: 24px; height: 24px; font-size: 0.6rem; }
+      .step-icon { font-size: 1.2rem; }
+      .step-card h4 { font-size: 0.7rem; }
+      .step-card p { font-size: 0.6rem; }
+
+      .testimonial-card { padding: 0.8rem; }
+      .testimonial-card p { font-size: 0.75rem; }
+      .testimonial-card cite { font-size: 0.7rem; }
+
+      .faq-item summary { font-size: 0.8rem; }
+      .faq-item p { font-size: 0.75rem; }
+
+      .footer-brand .logo { font-size: 1rem; }
+      .footer-brand p { font-size: 0.7rem; }
+      .footer-copy { font-size: 0.6rem; }
+
+      .section-header h2 { font-size: 1.3rem; }
+      .section-header p { font-size: 0.8rem; }
+      .promo-card { flex-direction: column; text-align: center; padding: 1.5rem; }
+      .promo-content h2 { font-size: 1.4rem; }
+      .promo-icons { font-size: 2rem; }
+    }
+
+    @media (max-width: 380px) {
+      .nav-links .nav-link { font-size: 0.6rem; padding: 0.1rem 0.4rem; }
+      .btn-outline, .btn-store, .btn-boost { font-size: 0.55rem; padding: 0.1rem 0.5rem; }
+      .hero-left h1 { font-size: 1.3rem; }
+      .phone-mockup { width: 110px; }
+      .phone-plan { font-size: 0.45rem; }
+      .services-grid { grid-template-columns: 1fr; gap: 0.6rem; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -196,6 +349,18 @@
             <div class="phone-footer">⚡ Instant Delivery</div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NETWORK TABS ===== -->
+  <section class="network-section">
+    <div class="container">
+      <div class="network-tabs">
+        <button class="network-tab active" data-network="mtn" data-provider="datamart">📶 MTN (DM)</button>
+        <button class="network-tab" data-network="mtn" data-provider="gigsgrid">📶 MTN (GG)</button>
+        <button class="network-tab" data-network="airtel_tigo" data-provider="datamart">📶 AirtelTigo</button>
+        <button class="network-tab" data-network="telecel" data-provider="datamart">📶 Telecel</button>
       </div>
     </div>
   </section>
@@ -463,6 +628,50 @@
           <p>"So simple and fast. I love it."</p>
           <cite>— Abena M.</cite>
         </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STORE PROMO ===== -->
+  <section class="promo-section store-bg">
+    <div class="container">
+      <div class="promo-card">
+        <div class="promo-content">
+          <span class="promo-badge store">🛒 Shop Now</span>
+          <h2>Visit Our <span class="store-color">Store</span></h2>
+          <p>Buy and sell products, gadgets, and more on our dedicated e‑commerce platform.</p>
+          <a href="https://store.pascallinks.com" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            🛒 Explore Store →
+          </a>
+        </div>
+        <div class="promo-icons">
+          <span>🛍️</span>
+          <span>💻</span>
+          <span>📱</span>
+          <span>🎮</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BOOST PROMO ===== -->
+  <section class="promo-section boost-bg">
+    <div class="container">
+      <div class="promo-card">
+        <div class="promo-content">
+          <span class="promo-badge boost">🔥 Also Available</span>
+          <h2>Grow Your <span class="boost-color">Social Media</span></h2>
+          <p>Get real followers, likes, and views on Instagram, TikTok, YouTube, and more.</p>
+          <a href="https://pascallinks.com" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            🚀 Start Boosting Now →
+          </a>
+        </div>
+        <div class="promo-icons">
+          <span>📸</span>
+          <span>🎵</span>
+          <span>▶️</span>
+          <span>🐦</span>
+        </div>
       </div>
     </div>
   </section>
