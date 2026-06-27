@@ -1003,5 +1003,69 @@ a { text-decoration: none; color: inherit; }
   .steps-grid {
     grid-template-columns: 1fr;
   }
+/* ===== IMPROVE STORE & BOOST BUTTONS ON MOBILE ===== */
+
+/* Default styles (desktop) – already fine */
+.btn-store,
+.btn-boost {
+  padding: 0.4rem 1.2rem;
+  font-size: 0.85rem;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Mobile adjustments (max-width: 480px) */
+@media (max-width: 480px) {
+  .btn-store,
+  .btn-boost {
+    padding: 0.2rem 0.7rem;      /* smaller padding */
+    font-size: 0.65rem;          /* smaller text */
+    border-radius: 20px;         /* slightly rounder */
+    gap: 0.2rem;
+  }
+
+  /* Optionally hide the text on very small screens and show only icons */
+  @media (max-width: 380px) {
+    .btn-store span,
+    .btn-boost span {
+      display: none;
+    }
+    .btn-store::before {
+      content: "🛒";
+      font-size: 1rem;
+    }
+    .btn-boost::before {
+      content: "🚀";
+      font-size: 1rem;
+    }
+    .btn-store,
+    .btn-boost {
+      padding: 0.2rem 0.5rem;
+      font-size: 0;
+      min-width: 34px;
+      justify-content: center;
+    }
+  }
+}
+
+/* Make the nav-links wrap on small screens */
+@media (max-width: 480px) {
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3rem;
+  }
+  .nav-links .nav-link {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
 
 }
