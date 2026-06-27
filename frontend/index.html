@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>PascalLinks – Data Bundles Instantly</title>
+  <title>PascalLinks – Data, SMM, Gift Cards & Marketplace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
@@ -24,7 +24,6 @@
       transform: scale(1.05);
       box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
     }
-
     .btn-boost {
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
       color: #fff !important;
@@ -39,83 +38,116 @@
       box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
     }
 
-    /* ===== PROMO SECTIONS ===== */
-    .promo-section {
-      padding: 2.5rem 0;
-    }
-    .promo-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* ===== SERVICES SECTION ===== */
+    .services-section {
+      padding: 3rem 0;
       background: #fff;
-      border-radius: 20px;
-      padding: 2rem 2.5rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
       max-width: 900px;
       margin: 0 auto;
-      flex-wrap: wrap;
-      gap: 1.5rem;
     }
-    .promo-content {
-      flex: 1;
+    .service-card {
+      background: #f8f9fa;
+      border-radius: 16px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: all 0.3s;
+      border: 2px solid transparent;
     }
-    .promo-badge {
-      display: inline-block;
-      padding: 0.2rem 0.8rem;
-      border-radius: 30px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold);
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
     }
-    .promo-badge.store {
-      background: #764ba2;
-      color: #fff;
+    .service-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.3rem;
     }
-    .promo-badge.boost {
-      background: #f5576c;
-      color: #fff;
-    }
-    .promo-content h2 {
-      font-size: 1.8rem;
-      font-weight: 800;
+    .service-card h4 {
+      font-size: 1.1rem;
       color: var(--primary);
-      margin: 0.3rem 0;
+      margin-bottom: 0.2rem;
     }
-    .promo-content h2 span {
-      color: #f5576c;
-    }
-    .promo-content h2 .store-color {
-      color: #764ba2;
-    }
-    .promo-content p {
+    .service-card p {
+      font-size: 0.85rem;
       color: #6c757d;
+    }
+    .service-card .btn-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-weight: 600;
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    /* ===== TRUST / FEATURES ===== */
+    .trust-section {
+      padding: 2.5rem 0;
+      background: var(--bg-light);
+    }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .trust-item {
+      text-align: center;
+    }
+    .trust-item .icon {
+      font-size: 2rem;
+    }
+    .trust-item h5 {
       font-size: 1rem;
-      margin-bottom: 1rem;
+      color: var(--primary);
+      margin: 0.3rem 0 0.1rem;
     }
-    .promo-icons {
+    .trust-item p {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+
+    /* ===== CATEGORIES (Store) ===== */
+    .categories-section {
+      padding: 2rem 0;
+      background: #fff;
+    }
+    .categories-grid {
       display: flex;
-      gap: 1rem;
-      font-size: 2.8rem;
-      opacity: 0.8;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem 1.5rem;
+      max-width: 700px;
+      margin: 0 auto;
     }
-    .promo-section.store-bg {
-      background: linear-gradient(135deg, #e8ecf9 0%, #d5d8f0 100%);
+    .category-tag {
+      background: #f1f3f5;
+      padding: 0.3rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #495057;
+      transition: all 0.2s;
+      cursor: default;
     }
-    .promo-section.boost-bg {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    .category-tag:hover {
+      background: var(--gold);
+      color: var(--primary);
     }
+
     @media (max-width: 600px) {
-      .promo-card {
-        flex-direction: column;
-        text-align: center;
-        padding: 1.5rem;
+      .services-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
       }
-      .promo-content h2 {
-        font-size: 1.4rem;
-      }
-      .promo-icons {
-        font-size: 2rem;
+      .trust-grid {
+        grid-template-columns: 1fr 1fr;
       }
     }
   </style>
@@ -140,15 +172,16 @@
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-left">
-        <span class="hero-badge">📱 Data Reseller</span>
-        <h1>Data <span>Instantly</span></h1>
-        <p class="tagline">Buy MTN, AirtelTigo &amp; Telecel bundles in seconds.</p>
+        <span class="hero-badge">🇬🇭 Your One‑Stop Digital Hub</span>
+        <h1>Data · SMM · <span>Gift Cards</span></h1>
+        <p class="tagline">Buy affordable data bundles, airtime, gift cards, and grow your socials with our SMM services. Fast, reliable, and transparent.</p>
         <div class="hero-trust">
           <span>🔒 Secure</span>
           <span>⚡ Instant</span>
           <span>📞 24/7</span>
+          <span>✅ Trusted</span>
         </div>
-        <a href="#purchase" class="btn-primary">Buy Now →</a>
+        <a href="#purchase" class="btn-primary">Buy Data Now →</a>
       </div>
       <div class="hero-right">
         <div class="phone-mockup">
@@ -167,14 +200,94 @@
     </div>
   </section>
 
-  <!-- ===== NETWORK TABS ===== -->
-  <section class="network-section">
+  <!-- ===== SERVICES ===== -->
+  <section class="services-section">
     <div class="container">
-      <div class="network-tabs">
-        <button class="network-tab active" data-network="mtn" data-provider="datamart">📶 MTN (DM)</button>
-        <button class="network-tab" data-network="mtn" data-provider="gigsgrid">📶 MTN (GG)</button>
-        <button class="network-tab" data-network="airtel_tigo" data-provider="datamart">📶 AirtelTigo</button>
-        <button class="network-tab" data-network="telecel" data-provider="datamart">📶 Telecel</button>
+      <div class="section-header">
+        <h2>Our <span>Services</span></h2>
+        <p>Everything you need in one place – data, marketplace, SMM, and gift cards.</p>
+      </div>
+      <div class="services-grid">
+        <!-- Data Bundles -->
+        <div class="service-card">
+          <div class="icon">📶</div>
+          <h4>Data Bundles</h4>
+          <p>MTN, AirtelTigo, Telecel – instant delivery.</p>
+          <a href="#purchase" class="btn-link">Buy Now →</a>
+        </div>
+        <!-- Marketplace (Store) -->
+        <div class="service-card">
+          <div class="icon">🛒</div>
+          <h4>MarketPlace</h4>
+          <p>Buy and sell products from trusted vendors.</p>
+          <a href="https://store.pascallinks.com" target="_blank" class="btn-link">Explore Store →</a>
+        </div>
+        <!-- SMM Boosting -->
+        <div class="service-card">
+          <div class="icon">🚀</div>
+          <h4>SMM Boosting</h4>
+          <p>Grow your social media – followers, likes, views.</p>
+          <a href="https://pascallinks.com" target="_blank" class="btn-link">Boost Now →</a>
+        </div>
+        <!-- Gift Cards -->
+        <div class="service-card">
+          <div class="icon">🎁</div>
+          <h4>Gift Cards</h4>
+          <p>Buy and sell digital gift cards instantly.</p>
+          <a href="https://store.pascallinks.com" target="_blank" class="btn-link">Get Gift Cards →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRUST / VERIFIED BADGES ===== -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why <span>PascalLinks</span></h2>
+        <p>Trusted by thousands across Ghana.</p>
+      </div>
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="icon">✅</div>
+          <h5>Verified Stores</h5>
+          <p>Shop from trusted sellers only.</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">⚡</div>
+          <h5>Fast Ordering</h5>
+          <p>Place orders in seconds.</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">🛡️</div>
+          <h5>Secure Payments</h5>
+          <p>Paystack‑protected transactions.</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">📦</div>
+          <h5>Verified Products</h5>
+          <p>Quality and authenticity guaranteed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SHOP BY CATEGORY ===== -->
+  <section class="categories-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Shop by <span>Category</span></h2>
+        <p>Explore our marketplace at <a href="https://store.pascallinks.com" target="_blank" style="color:var(--gold);font-weight:600;">store.pascallinks.com</a></p>
+      </div>
+      <div class="categories-grid">
+        <span class="category-tag">👶 Baby Products</span>
+        <span class="category-tag">💻 Computing</span>
+        <span class="category-tag">📱 Digital Products</span>
+        <span class="category-tag">🔌 Electronics</span>
+        <span class="category-tag">👗 Fashion</span>
+        <span class="category-tag">🎮 Gaming</span>
+        <span class="category-tag">📚 Books</span>
+        <span class="category-tag">🏠 Home &amp; Living</span>
       </div>
     </div>
   </section>
@@ -354,50 +467,6 @@
     </div>
   </section>
 
-  <!-- ===== STORE PROMO ===== -->
-  <section class="promo-section store-bg">
-    <div class="container">
-      <div class="promo-card">
-        <div class="promo-content">
-          <span class="promo-badge store">🛒 Shop Now</span>
-          <h2>Visit Our <span class="store-color">Store</span></h2>
-          <p>Buy and sell products, gadgets, and more on our dedicated e‑commerce platform.</p>
-          <a href="https://store.pascallinks.com" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-            🛒 Explore Store →
-          </a>
-        </div>
-        <div class="promo-icons">
-          <span>🛍️</span>
-          <span>💻</span>
-          <span>📱</span>
-          <span>🎮</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== BOOST PROMO ===== -->
-  <section class="promo-section boost-bg">
-    <div class="container">
-      <div class="promo-card">
-        <div class="promo-content">
-          <span class="promo-badge boost">🔥 Also Available</span>
-          <h2>Grow Your <span>Social Media</span></h2>
-          <p>Get real followers, likes, and views on Instagram, TikTok, YouTube, and more.</p>
-          <a href="https://pascallinks.com" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-            🚀 Start Boosting Now →
-          </a>
-        </div>
-        <div class="promo-icons">
-          <span>📸</span>
-          <span>🎵</span>
-          <span>▶️</span>
-          <span>🐦</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== FAQ ===== -->
   <section class="faq">
     <div class="container">
@@ -410,6 +479,10 @@
           <summary>What if I enter the wrong number?</summary>
           <p>Please double-check. We cannot reverse delivery.</p>
         </details>
+        <details class="faq-item">
+          <summary>Can I also get gift cards or SMM services here?</summary>
+          <p>Yes! Visit our <a href="https://store.pascallinks.com" target="_blank" style="color:var(--gold);font-weight:600;">Store</a> for gift cards and marketplace, or <a href="https://pascallinks.com" target="_blank" style="color:var(--gold);font-weight:600;">Boost Social</a> for social media growth.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -419,7 +492,13 @@
     <div class="container footer-inner">
       <div class="footer-brand">
         <span class="logo">📶 Pascal<span>Links</span></span>
-        <p>Turning ideas into powerful digital solutions.</p>
+        <p>Your one‑stop digital hub – data, SMM, gift cards &amp; marketplace.</p>
+        <div style="margin-top:0.5rem;font-size:0.8rem;opacity:0.6;">
+          <a href="https://store.pascallinks.com" target="_blank" style="color:inherit;margin:0 0.5rem;">Store</a>
+          <a href="https://pascallinks.com" target="_blank" style="color:inherit;margin:0 0.5rem;">SMM</a>
+          <a href="login.html" style="color:inherit;margin:0 0.5rem;">Login</a>
+          <a href="register.html" style="color:inherit;margin:0 0.5rem;">Register</a>
+        </div>
       </div>
       <div class="footer-copy">
         &copy; 2026 PascalLinks. All rights reserved.
