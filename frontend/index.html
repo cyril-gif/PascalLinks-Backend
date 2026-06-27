@@ -9,6 +9,88 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== BOOST BUTTON IN NAV ===== */
+    .btn-boost {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: #fff !important;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+    .btn-boost:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    /* ===== BOOST PROMO SECTION ===== */
+    .boost-promo {
+      padding: 2.5rem 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    .boost-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      max-width: 900px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .boost-content {
+      flex: 1;
+    }
+    .boost-badge {
+      display: inline-block;
+      background: #f5576c;
+      color: #fff;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .boost-content h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 0.3rem 0;
+    }
+    .boost-content h2 span {
+      color: #f5576c;
+    }
+    .boost-content p {
+      color: #6c757d;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    .boost-icons {
+      display: flex;
+      gap: 1rem;
+      font-size: 2.8rem;
+      opacity: 0.8;
+    }
+    @media (max-width: 600px) {
+      .boost-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+      }
+      .boost-content h2 {
+        font-size: 1.4rem;
+      }
+      .boost-icons {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -17,6 +99,8 @@
     <div class="container header-inner">
       <a href="index.html" class="logo">📶 Pascal<span>Links</span></a>
       <nav class="nav-links">
+        <a href="index.html" class="nav-link">Data</a>
+        <a href="https://pascallinks.com" target="_blank" class="nav-link btn-boost">🚀 Boost Social</a>
         <a href="login.html" class="nav-link">Login</a>
         <a href="register.html" class="nav-link btn-outline">Register</a>
       </nav>
@@ -237,6 +321,28 @@
           <p>"So simple and fast. I love it."</p>
           <cite>— Abena M.</cite>
         </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BOOST PROMO SECTION ===== -->
+  <section class="boost-promo">
+    <div class="container">
+      <div class="boost-card">
+        <div class="boost-content">
+          <span class="boost-badge">🔥 Also Available</span>
+          <h2>Grow Your <span>Social Media</span></h2>
+          <p>Get real followers, likes, and views on Instagram, TikTok, YouTube, and more.</p>
+          <a href="https://pascallinks.com" target="_blank" class="btn-primary">
+            🚀 Start Boosting Now →
+          </a>
+        </div>
+        <div class="boost-icons">
+          <span>📸</span>
+          <span>🎵</span>
+          <span>▶️</span>
+          <span>🐦</span>
+        </div>
       </div>
     </div>
   </section>
