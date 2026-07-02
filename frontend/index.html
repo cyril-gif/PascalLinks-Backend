@@ -42,6 +42,22 @@
       box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
     }
 
+    /* Reseller button */
+    .btn-reseller {
+      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+      color: var(--primary) !important;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+      box-shadow: 0 4px 14px rgba(247, 151, 30, 0.3);
+    }
+    .btn-reseller:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(247, 151, 30, 0.5);
+    }
+
     /* ---- Services ---- */
     .services-section {
       padding: 3rem 0;
@@ -145,7 +161,7 @@
       color: var(--primary);
     }
 
-    /* ---- Promo sections ---- */
+    /* ---- Promo sections (Store, Boost) ---- */
     .promo-section {
       padding: 2.5rem 0;
     }
@@ -211,115 +227,170 @@
     .promo-section.boost-bg {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     }
-    /* ===== FLOATING WHATSAPP BUTTON ===== */
-.whatsapp-float {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
 
-.whatsapp-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #25D366;
-  color: #fff;
-  padding: 12px 18px;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.35);
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-}
+    /* ---- Reseller promo ---- */
+    .reseller-section {
+      padding: 3rem 0;
+      background: linear-gradient(135deg, #fff9e6 0%, #fef3d7 100%);
+    }
+    .reseller-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      max-width: 1000px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      gap: 2rem;
+      border: 2px solid #ffd200;
+    }
+    .reseller-content {
+      flex: 1;
+    }
+    .reseller-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+      color: var(--primary);
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .reseller-content h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 0.5rem 0;
+    }
+    .reseller-content h2 span {
+      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .reseller-content p {
+      color: #6c757d;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      max-width: 500px;
+    }
+    .reseller-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .reseller-features span {
+      font-size: 0.85rem;
+      color: #495057;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .reseller-features span::before {
+      content: "✅";
+      font-size: 0.9rem;
+    }
+    .reseller-cta {
+      display: inline-block;
+      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+      color: var(--primary);
+      padding: 0.8rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      box-shadow: 0 4px 14px rgba(247, 151, 30, 0.35);
+    }
+    .reseller-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(247, 151, 30, 0.5);
+    }
+    .reseller-icons {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 3.5rem;
+    }
+    .reseller-icons span {
+      opacity: 0.9;
+    }
 
-.whatsapp-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 32px rgba(37, 211, 102, 0.5);
-}
-
-.whatsapp-btn .whatsapp-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.whatsapp-label {
-  white-space: nowrap;
-}
-
-/* Badge (the "Join 40K+ Community!" text) */
-.whatsapp-badge {
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  animation: pulse-badge 2s ease-in-out infinite;
-  white-space: nowrap;
-}
-
-@keyframes pulse-badge {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 600px) {
-  .whatsapp-float {
-    bottom: 16px;
-    right: 16px;
-    gap: 6px;
-  }
-  .whatsapp-btn {
-    padding: 10px 14px;
-    font-size: 0.85rem;
-    gap: 6px;
-  }
-  .whatsapp-btn .whatsapp-icon svg {
-    width: 22px;
-    height: 22px;
-  }
-  .whatsapp-badge {
-    font-size: 0.65rem;
-    padding: 4px 10px;
-  }
-}
-
-@media (max-width: 400px) {
-  .whatsapp-btn .whatsapp-label {
-    display: none;
-  }
-  .whatsapp-btn {
-    padding: 12px;
-    border-radius: 50%;
-  }
-  .whatsapp-btn .whatsapp-icon svg {
-    width: 26px;
-    height: 26px;
-  }
-}
+    /* ---- Floating WhatsApp (draggable) ---- */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      cursor: grab;
+      user-select: none;
+    }
+    .whatsapp-float:active {
+      cursor: grabbing;
+    }
+    .whatsapp-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #25D366;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 6px 24px rgba(37, 211, 102, 0.35);
+      transition: all 0.3s ease;
+      border: none;
+      font-family: inherit;
+    }
+    .whatsapp-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 32px rgba(37, 211, 102, 0.5);
+    }
+    .whatsapp-btn .whatsapp-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.3rem;
+    }
+    .whatsapp-label {
+      white-space: nowrap;
+    }
+    .whatsapp-badge {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      animation: pulse-badge 2s ease-in-out infinite;
+      white-space: nowrap;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
 
     /* =============================================
        MOBILE OPTIMIZATIONS
        ============================================= */
     @media (max-width: 480px) {
       .site-header .logo { font-size: 1.1rem; }
-      .nav-links { gap: 0.3rem; }
+      .nav-links { gap: 0.3rem; flex-wrap: wrap; justify-content: center; }
       .nav-links .nav-link { font-size: 0.7rem; padding: 0.2rem 0.5rem; }
-      .btn-outline, .btn-store, .btn-boost { padding: 0.2rem 0.6rem; font-size: 0.65rem; }
+      .btn-outline, .btn-store, .btn-boost, .btn-reseller { padding: 0.2rem 0.6rem; font-size: 0.65rem; }
 
       .hero { padding: 1.2rem 0 1rem; }
       .hero-left h1 { font-size: 1.6rem; }
@@ -391,17 +462,27 @@
       .promo-card { flex-direction: column; text-align: center; padding: 1.5rem; }
       .promo-content h2 { font-size: 1.4rem; }
       .promo-icons { font-size: 2rem; }
+      .reseller-card { flex-direction: column; text-align: center; padding: 1.5rem; }
+      .reseller-content h2 { font-size: 1.6rem; }
+      .reseller-features { justify-content: center; }
+      .reseller-icons { font-size: 2.5rem; gap: 1rem; }
+      .whatsapp-float { bottom: 16px; right: 16px; gap: 6px; }
+      .whatsapp-btn { padding: 10px 14px; font-size: 0.85rem; gap: 6px; }
+      .whatsapp-badge { font-size: 0.65rem; padding: 4px 10px; }
     }
 
     @media (max-width: 380px) {
       .nav-links .nav-link { font-size: 0.6rem; padding: 0.1rem 0.4rem; }
-      .btn-outline, .btn-store, .btn-boost { font-size: 0.55rem; padding: 0.1rem 0.5rem; }
+      .btn-outline, .btn-store, .btn-boost, .btn-reseller { font-size: 0.55rem; padding: 0.1rem 0.5rem; }
       .hero-left h1 { font-size: 1.3rem; }
       .phone-mockup { width: 110px; }
       .phone-plan { font-size: 0.45rem; }
       .services-grid { grid-template-columns: 1fr; gap: 0.6rem; }
       .trust-grid { grid-template-columns: 1fr; }
       .steps-grid { grid-template-columns: 1fr; }
+      .whatsapp-btn .whatsapp-label { display: none; }
+      .whatsapp-btn { padding: 12px; border-radius: 50%; }
+      .whatsapp-btn .whatsapp-icon { font-size: 1.6rem; }
     }
   </style>
 </head>
@@ -415,6 +496,7 @@
         <a href="index.html" class="nav-link">Data</a>
         <a href="https://store.pascallinks.com" target="_blank" class="nav-link btn-store">🛒 Store</a>
         <a href="https://pascallinks.com" target="_blank" class="nav-link btn-boost">🚀 Boost Social</a>
+        <a href="reseller.html" class="nav-link btn-reseller">💼 Become a Reseller</a>
         <a href="login.html" class="nav-link">Login</a>
         <a href="register.html" class="nav-link btn-outline">Register</a>
       </nav>
@@ -465,7 +547,95 @@
     </div>
   </section>
 
-    <!-- ===== PURCHASE FLOW ===== -->
+  <!-- ===== SERVICES ===== -->
+  <section class="services-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our <span>Services</span></h2>
+        <p>Everything you need in one place – data, marketplace, SMM, and gift cards.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="icon">📶</div>
+          <h4>Data Bundles</h4>
+          <p>MTN, AirtelTigo, Telecel – instant delivery.</p>
+          <a href="#purchase" class="btn-link">Buy Now →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">🛒</div>
+          <h4>MarketPlace</h4>
+          <p>Buy and sell products from trusted vendors.</p>
+          <a href="https://store.pascallinks.com" target="_blank" class="btn-link">Explore Store →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">🚀</div>
+          <h4>SMM Boosting</h4>
+          <p>Grow your social media – followers, likes, views.</p>
+          <a href="https://pascallinks.com" target="_blank" class="btn-link">Boost Now →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">🎁</div>
+          <h4>Gift Cards</h4>
+          <p>Buy and sell digital gift cards instantly.</p>
+          <a href="https://store.pascallinks.com" target="_blank" class="btn-link">Get Gift Cards →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRUST / VERIFIED BADGES ===== -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why <span>PascalLinks</span></h2>
+        <p>Trusted by thousands across Ghana.</p>
+      </div>
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="icon">✅</div>
+          <h5>Verified Stores</h5>
+          <p>Shop from trusted sellers only.</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">⚡</div>
+          <h5>Fast Ordering</h5>
+          <p>Place orders in seconds.</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">🛡️</div>
+          <h5>Secure Payments</h5>
+          <p>Paystack‑protected transactions.</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">📦</div>
+          <h5>Verified Products</h5>
+          <p>Quality and authenticity guaranteed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SHOP BY CATEGORY ===== -->
+  <section class="categories-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Shop by <span>Category</span></h2>
+        <p>Explore our marketplace at <a href="https://store.pascallinks.com" target="_blank" style="color:var(--gold);font-weight:600;">store.pascallinks.com</a></p>
+      </div>
+      <div class="categories-grid">
+        <span class="category-tag">👶 Baby Products</span>
+        <span class="category-tag">💻 Computing</span>
+        <span class="category-tag">📱 Digital Products</span>
+        <span class="category-tag">🔌 Electronics</span>
+        <span class="category-tag">👗 Fashion</span>
+        <span class="category-tag">🎮 Gaming</span>
+        <span class="category-tag">📚 Books</span>
+        <span class="category-tag">🏠 Home &amp; Living</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PURCHASE FLOW ===== -->
   <section class="purchase-section" id="purchase">
     <div class="container">
       <div class="section-header">
@@ -622,92 +792,6 @@
     </div>
   </section>
 
-  <!-- ===== SERVICES ===== -->
-  <section class="services-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Our <span>Services</span></h2>
-        <p>Everything you need in one place – data, marketplace, SMM, and gift cards.</p>
-      </div>
-      <div class="services-grid">
-        <!-- Data Bundles -->
-        <div class="service-card">
-          <div class="icon">📶</div>
-          <h4>Data Bundles</h4>
-          <p>MTN, AirtelTigo, Telecel – instant delivery.</p>
-          <a href="#purchase" class="btn-link">Buy Now →</a>
-        </div>
-        <!-- Marketplace (Store) -->
-        <div class="service-card">
-          <div class="icon">🛒</div>
-          <h4>MarketPlace</h4>
-          <p>Buy and sell products from trusted vendors.</p>
-          <a href="https://store.pascallinks.com" target="_blank" class="btn-link">Explore Store →</a>
-        </div>
-        <!-- SMM Boosting -->
-        <div class="service-card">
-          <div class="icon">🚀</div>
-          <h4>SMM Boosting</h4>
-          <p>Grow your social media – followers, likes, views.</p>
-          <a href="https://pascallinks.com" target="_blank" class="btn-link">Boost Now →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  
-  <!-- ===== TRUST / VERIFIED BADGES ===== -->
-  <section class="trust-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Why <span>PascalLinks</span></h2>
-        <p>Trusted by thousands across Ghana.</p>
-      </div>
-      <div class="trust-grid">
-        <div class="trust-item">
-          <div class="icon">✅</div>
-          <h5>Verified Stores</h5>
-          <p>Shop from trusted sellers only.</p>
-        </div>
-        <div class="trust-item">
-          <div class="icon">⚡</div>
-          <h5>Fast Ordering</h5>
-          <p>Place orders in seconds.</p>
-        </div>
-        <div class="trust-item">
-          <div class="icon">🛡️</div>
-          <h5>Secure Payments</h5>
-          <p>Paystack‑protected transactions.</p>
-        </div>
-        <div class="trust-item">
-          <div class="icon">📦</div>
-          <h5>Verified Products</h5>
-          <p>Quality and authenticity guaranteed.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== SHOP BY CATEGORY ===== -->
-  <section class="categories-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Shop by <span>Category</span></h2>
-        <p>Explore our marketplace at <a href="https://store.pascallinks.com" target="_blank" style="color:var(--gold);font-weight:600;">store.pascallinks.com</a></p>
-      </div>
-      <div class="categories-grid">
-        <span class="category-tag">👶 Baby Products</span>
-        <span class="category-tag">💻 Computing</span>
-        <span class="category-tag">📱 Digital Products</span>
-        <span class="category-tag">🔌 Electronics</span>
-        <span class="category-tag">👗 Fashion</span>
-        <span class="category-tag">🎮 Gaming</span>
-        <span class="category-tag">📚 Books</span>
-        <span class="category-tag">🏠 Home &amp; Living</span>
-      </div>
-    </div>
-  </section>
-  
   <!-- ===== TESTIMONIALS ===== -->
   <section class="testimonials">
     <div class="container">
@@ -770,6 +854,31 @@
     </div>
   </section>
 
+  <!-- ===== BECOME A RESELLER ===== -->
+  <section class="reseller-section">
+    <div class="container">
+      <div class="reseller-card">
+        <div class="reseller-content">
+          <span class="reseller-badge">🚀 Earn Money</span>
+          <h2>Become a <span>Reseller</span></h2>
+          <p>Start your own data and SMM business today. Earn commissions by referring customers and building your reseller network.</p>
+          <div class="reseller-features">
+            <span>Earn up to 20% commission</span>
+            <span>White‑label platform</span>
+            <span>Passive income</span>
+            <span>Instant activation</span>
+          </div>
+          <a href="reseller.html" class="reseller-cta">💼 Start Reselling Now →</a>
+        </div>
+        <div class="reseller-icons">
+          <span>💰</span>
+          <span>📈</span>
+          <span>🚀</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== FAQ ===== -->
   <section class="faq">
     <div class="container">
@@ -809,22 +918,142 @@
     </div>
   </footer>
 
+  <!-- ===== FLOATING WHATSAPP BUTTON (Draggable) ===== -->
+  <div id="whatsapp-float" class="whatsapp-float">
+    <a href="https://chat.whatsapp.com/DmkYFOTFLViHPMo76TnI78" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="whatsapp-btn" 
+       id="whatsapp-btn"
+       aria-label="Join WhatsApp Community">
+      <span class="whatsapp-icon">👥</span>
+      <span class="whatsapp-label">Join Community</span>
+    </a>
+    <div class="whatsapp-badge">💬 Join 40K+ Community!</div>
+  </div>
+
   <!-- Scripts -->
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
-  <!-- ===== FLOATING WHATSAPP BUTTON ===== -->
-<div class="whatsapp-float">
-  <!-- Join Group button (only) -->
-  <a href="https://chat.whatsapp.com/DmkYFOTFLViHPMo76TnI78" 
-     target="_blank" 
-     rel="noopener noreferrer" 
-     class="whatsapp-btn" 
-     aria-label="Join WhatsApp Community">
-    <span class="whatsapp-icon">👥</span>
-    <span class="whatsapp-label">Join Community</span>
-  </a>
-  <div class="whatsapp-badge">💬 Join 40K+ Community!</div>
-</div>
+
+  <!-- ===== DRAGGABLE WHATSAPP SCRIPT ===== -->
+  <script>
+    (function() {
+      const floatContainer = document.getElementById('whatsapp-float');
+      const btn = document.getElementById('whatsapp-btn');
+      let isDragging = false;
+      let startX, startY, initialX, initialY;
+      let hasMoved = false;
+
+      function loadPosition() {
+        const saved = localStorage.getItem('whatsappFloatPos');
+        if (saved) {
+          try {
+            const pos = JSON.parse(saved);
+            floatContainer.style.left = pos.left;
+            floatContainer.style.top = pos.top;
+            floatContainer.style.right = 'auto';
+            floatContainer.style.bottom = 'auto';
+          } catch (e) { /* ignore */ }
+        }
+      }
+
+      function savePosition() {
+        const rect = floatContainer.getBoundingClientRect();
+        const pos = {
+          left: rect.left + 'px',
+          top: rect.top + 'px'
+        };
+        localStorage.setItem('whatsappFloatPos', JSON.stringify(pos));
+      }
+
+      floatContainer.style.position = 'fixed';
+      floatContainer.style.cursor = 'grab';
+
+      btn.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        hasMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        const rect = floatContainer.getBoundingClientRect();
+        initialX = rect.left;
+        initialY = rect.top;
+        floatContainer.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+          hasMoved = true;
+        }
+        floatContainer.style.left = (initialX + dx) + 'px';
+        floatContainer.style.top = (initialY + dy) + 'px';
+        floatContainer.style.right = 'auto';
+        floatContainer.style.bottom = 'auto';
+      });
+
+      document.addEventListener('mouseup', function(e) {
+        if (isDragging) {
+          isDragging = false;
+          floatContainer.style.cursor = 'grab';
+          if (hasMoved) {
+            savePosition();
+            e.preventDefault();
+          }
+        }
+      });
+
+      // Touch events
+      let touchStartX, touchStartY, touchInitialX, touchInitialY;
+      btn.addEventListener('touchstart', function(e) {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        const rect = floatContainer.getBoundingClientRect();
+        touchInitialX = rect.left;
+        touchInitialY = rect.top;
+        isDragging = true;
+        hasMoved = false;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+          hasMoved = true;
+        }
+        floatContainer.style.left = (touchInitialX + dx) + 'px';
+        floatContainer.style.top = (touchInitialY + dy) + 'px';
+        floatContainer.style.right = 'auto';
+        floatContainer.style.bottom = 'auto';
+      }, { passive: true });
+
+      document.addEventListener('touchend', function(e) {
+        if (isDragging) {
+          isDragging = false;
+          if (hasMoved) {
+            savePosition();
+            e.preventDefault();
+          }
+        }
+      }, { passive: false });
+
+      btn.addEventListener('click', function(e) {
+        if (hasMoved) {
+          e.preventDefault();
+          e.stopPropagation();
+          hasMoved = false;
+        }
+      });
+
+      loadPosition();
+    })();
+  </script>
 
 </body>
 </html>
